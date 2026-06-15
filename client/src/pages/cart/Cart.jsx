@@ -1,7 +1,7 @@
 import styles from './cart.module.css';
 import CartItem from "../../components/cart-item/CartItem";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { validateCart } from "../../actions/products";
 import { useState } from "react";
 import Error from "../../components/feedback/error/Error";
@@ -10,10 +10,17 @@ const Cart = ({ cart, cartCount, updateQuantity }) => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = useSelector(state => state.authentication.user);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleCheckout = () => {
+        if (!user) {
+            setError("You must be logged in to checkout. Redirecting to login...");
+            setTimeout(() => navigate('/login'), 1500);
+            return;
+        }
+
         if (isLoading) return;
         setIsLoading(true);
         const onSuccess = (token) => {

@@ -4,15 +4,26 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
     return (
-        <div className={styles['wrapper']}>
+        <footer className={styles['wrapper']}>
             <div className={styles['top-wrapper']}>
                 <div className={styles['brand-section']}>
                     <div className={styles['logo-wrapper']}>
                         <img src={Logo} alt={'GrocerApp'} />
                     </div>
                     <p className={styles['brand-desc']}>
-                        Fresh groceries delivered to your doorstep. Quality products at the best prices.
+                        Fresh groceries delivered to your doorstep in 20 minutes. Quality products at the best prices.
                     </p>
+                    <div className={styles['social-links']}>
+                        <a href="https://instagram.com" target="_blank" rel="noreferrer" className={styles['social-icon']}>
+                            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384031.png" alt="Instagram" />
+                        </a>
+                        <a href="https://facebook.com" target="_blank" rel="noreferrer" className={styles['social-icon']}>
+                            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384005.png" alt="Facebook" />
+                        </a>
+                        <a href="https://twitter.com" target="_blank" rel="noreferrer" className={styles['social-icon']}>
+                            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384017.png" alt="Twitter" />
+                        </a>
+                    </div>
                 </div>
                 
                 <div className={styles['links-section']}>
@@ -27,21 +38,19 @@ const Footer = () => {
                     </div>
                     
                     <div className={styles['links-column']}>
-                        <div className={styles['page-title']}>Categories</div>
-                        <div className={styles['pages-list']}>
-                            <Link to={'/products?category=Beverages'}>Beverages</Link>
-                            <Link to={'/products?category=Dairy'}>Dairy</Link>
-                            <Link to={'/products?category=Grains'}>Grains</Link>
-                            <Link to={'/products?category=Snacks'}>Snacks</Link>
-                        </div>
-                    </div>
-                    
-                    <div className={styles['links-column']}>
                         <div className={styles['page-title']}>Help & Support</div>
                         <div className={styles['pages-list']}>
-                            <Link to={'/orders'}>Track Order</Link>
-                            <Link to={'/shipping'}>Track Shipping</Link>
+                            <Link to={'/shipping'}>Track Order</Link>
                             <Link to={'/contact'}>Contact Us</Link>
+                            <Link to={'/about'}>About Us</Link>
+                        </div>
+                    </div>
+
+                    <div className={styles['links-column']}>
+                        <div className={styles['page-title']}>Legal</div>
+                        <div className={styles['pages-list']}>
+                            <Link to={'/privacy'}>Privacy Policy</Link>
+                            <Link to={'/terms'}>Terms & Conditions</Link>
                         </div>
                     </div>
                 </div>
@@ -49,10 +58,10 @@ const Footer = () => {
             
             <div className={styles['bottom-bar']}>
                 <div className={styles['copyright']}>
-                    © {new Date().getFullYear()} GrocerApp. Made with ❤️ by Jemish Dhameliya
+                    © {new Date().getFullYear()} Grocerry. All Rights Reserved.
                 </div>
             </div>
-        </div>
+        </footer>
     );
 }
 

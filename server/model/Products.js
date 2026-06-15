@@ -62,6 +62,16 @@ const productSchema = new Schema(
             }
         },
 
+        averageRating: {
+            type: Number,
+            default: 0
+        },
+
+        reviewCount: {
+            type: Number,
+            default: 0
+        },
+
         image: {
             type: String,
             required: true,
@@ -70,9 +80,10 @@ const productSchema = new Schema(
     },
     {
         timestamps: true,
-        strict: true
+        strict: true,
+        collection: 'products' // Explicitly set collection to avoid casing/pluralization mismatch
     }
 );
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Product", productSchema, "products");
 export default Product;

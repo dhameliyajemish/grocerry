@@ -1,47 +1,57 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect, useState, useMemo, lazy, Suspense } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import * as cartActions from "./actions/cart";
-import Home from "./pages/home/Home";
 import './shared/css/master.css';
 import Navigation from "./components/navigation/Navigation";
 import Footer from "./components/footer/Footer";
-import CartPage from "./pages/cart/Cart";
-import { useEffect, useState, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Order from "./pages/order/Order";
-import ForgotPassword from "./pages/authentication/forgot-password/ForgotPassword";
-import ResetPassword from "./pages/authentication/forgot-password/ResetPassword";
-import Signup from "./pages/authentication/signup/Signup";
-import Shipment from "./pages/shipment/Shipment";
-import Login from "./pages/authentication/login/Login";
-import PrivateRoute from "./components/privete-route/PrivateRoute";
-import Wishlist from "./pages/wishlist/Wishlist";
-import Error401 from "./pages/errors/401/Error401";
-import Error404 from "./pages/errors/404/Error404";
-import Admin from "./pages/admin/default/Admin";
-import AdminUpdate from "./pages/admin/products/update/default/AdminUpdate";
-import AdminUpdateSuccess from "./pages/admin/products/update/success/AdminUpdateSuccess";
-import AdminUpdateOrder from "./pages/admin/orders/update/AdminUpdateOrder";
-import AdminNewOrder from "./pages/admin/orders/new/AdminNewOrder";
 import ScrollToTop from "./components/scroll-to-top/ScrollToTop";
-import AdminOrders from "./pages/admin/orders/default/AdminOrders";
-import AdminViewOrder from "./pages/admin/orders/id/AdminViewOrder";
-import AdminNewProduct from "./pages/admin/products/new/AdminNewProduct";
-import AdminShipping from "./pages/admin/shipment/default/AdminShipping";
-import AdminUpdateShipping from "./pages/admin/shipment/update/AdminUpdateShipping";
-import Products from './pages/products/Products';
+import PrivateRoute from "./components/privete-route/PrivateRoute";
+import Loading from "./components/loading/Loading";
 
-import Checkout from "./pages/checkout/checkout";
-import Success from "./pages/checkout/success";
-import ShipmentId from "./pages/shipment/id/ShipmentId";
-import OrderId from "./pages/order/id/OrderId";
-import Invoice from "./components/invoice/Invoice";
-import Contact from "./pages/contact/Contact";
+// Lazy loaded pages
+const Home = lazy(() => import("./pages/home/Home"));
+const CartPage = lazy(() => import("./pages/cart/Cart"));
+const Order = lazy(() => import("./pages/order/Order"));
+const ForgotPassword = lazy(() => import("./pages/authentication/forgot-password/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/authentication/forgot-password/ResetPassword"));
+const Signup = lazy(() => import("./pages/authentication/signup/Signup"));
+const Shipment = lazy(() => import("./pages/shipment/Shipment"));
+const Login = lazy(() => import("./pages/authentication/login/Login"));
+const Wishlist = lazy(() => import("./pages/wishlist/Wishlist"));
+const Error401 = lazy(() => import("./pages/errors/401/Error401"));
+const Error404 = lazy(() => import("./pages/errors/404/Error404"));
+const Admin = lazy(() => import("./pages/admin/default/Admin"));
+const AdminUpdate = lazy(() => import("./pages/admin/products/update/default/AdminUpdate"));
+const AdminUpdateSuccess = lazy(() => import("./pages/admin/products/update/success/AdminUpdateSuccess"));
+const AdminUpdateOrder = lazy(() => import("./pages/admin/orders/update/AdminUpdateOrder"));
+const AdminNewOrder = lazy(() => import("./pages/admin/orders/new/AdminNewOrder"));
+const AdminOrders = lazy(() => import("./pages/admin/orders/default/AdminOrders"));
+const AdminViewOrder = lazy(() => import("./pages/admin/orders/id/AdminViewOrder"));
+const AdminNewProduct = lazy(() => import("./pages/admin/products/new/AdminNewProduct"));
+const AdminShipping = lazy(() => import("./pages/admin/shipment/default/AdminShipping"));
+const AdminUpdateShipping = lazy(() => import("./pages/admin/shipment/update/AdminUpdateShipping"));
+const Products = lazy(() => import("./pages/products/Products"));
+const Checkout = lazy(() => import("./pages/checkout/checkout"));
+const Success = lazy(() => import("./pages/checkout/success"));
+const ShipmentId = lazy(() => import("./pages/shipment/id/ShipmentId"));
+const OrderId = lazy(() => import("./pages/order/id/OrderId"));
+const Invoice = lazy(() => import("./components/invoice/Invoice"));
+const Contact = lazy(() => import("./pages/contact/Contact"));
 
 const App = () => {
     const dispatch = useDispatch();
     const cart = useSelector(state => state.cart.cart) || [];
     const [user] = useState(JSON.parse(localStorage.getItem('profile')));
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
     useEffect(() => {
         const syncCart = async () => {
@@ -159,47 +169,49 @@ const App = () => {
     return (
         <BrowserRouter>
             <ScrollToTop />
-            <Navigation cartCount={cartCount} />
-            <Routes>
-                <Route path={'/'} element={<Home />} />
-                <Route path={'/products'} element={<Products addProductToCart={addProductToCart} />} />
-                <Route path={'/cart'}
-                    element={<CartPage cart={cart} cartCount={cartCount} updateQuantity={updateQuantity} />} />
-                <Route path={'/checkout'} element={<PrivateRoute component={<Checkout />} />} />
-                <Route path={'/checkout/success'} element={<Success />} />
-                <Route path={'/signup'} element={<Signup />} />
-                <Route path={'/contact'} element={<Contact />} />
-                <Route path={'/shipping'} element={<Shipment />} />
-                <Route path={'/shipping/:id'} element={<ShipmentId />} />
-                <Route path={'/login'} element={<Login />} />
-                <Route path={'/forgot-password'} element={<ForgotPassword />} />
-                <Route path={'/reset-password'} element={<ResetPassword />} />
-                <Route path={'/orders'} element={<Order />} />
-                <Route path={'/orders/:id'} element={<OrderId />} />
-                <Route path={'/orders/:id/invoice'} element={<Invoice />} />
-                <Route path={'/wishlist'} element={<PrivateRoute component={<Wishlist addProductToCart={addProductToCart} />} />} />
-                <Route path={'/admin'} element={<PrivateRoute role={'ADMIN'} component={<Admin />} />} />
-                <Route path={'/admin/orders'}
-                    element={<PrivateRoute role={'ADMIN'} component={<AdminOrders />} />} />
-                <Route path={'/admin/orders/update'}
-                    element={<PrivateRoute role={'ADMIN'} component={<AdminUpdateOrder />} />} />
-                <Route path={'/admin/orders/new'}
-                    element={<PrivateRoute role={'ADMIN'} component={<AdminNewOrder />} />} />
-                <Route path={'/admin/shipping'}
-                    element={<PrivateRoute role={'ADMIN'} component={<AdminShipping />} />} />
-                <Route path={'/admin/shipping/update'}
-                    element={<PrivateRoute role={'ADMIN'} component={<AdminUpdateShipping />} />} />
-                <Route path={'/admin/products/new'}
-                    element={<PrivateRoute role={'ADMIN'} component={<AdminNewProduct />} />} />
-                <Route path={'/admin/products/update'}
-                    element={<PrivateRoute role={'ADMIN'} component={<AdminUpdate />} />} />
-                <Route path={'/admin/products/update/success'}
-                    element={<PrivateRoute role={'ADMIN'} component={<AdminUpdateSuccess />} />} />
-                <Route path={'/admin/orders/:id'}
-                    element={<PrivateRoute role={'ADMIN'} component={<AdminViewOrder />} />} />
-                <Route path={'/401'} element={<Error401 />} />
-                <Route path={'/*'} element={<Error404 />} />
-            </Routes>
+            <Navigation cartCount={cartCount} theme={theme} toggleTheme={toggleTheme} />
+            <Suspense fallback={<Loading />}>
+                <Routes>
+                    <Route path={'/'} element={<Home />} />
+                    <Route path={'/products'} element={<Products addProductToCart={addProductToCart} />} />
+                    <Route path={'/cart'}
+                        element={<CartPage cart={cart} cartCount={cartCount} updateQuantity={updateQuantity} />} />
+                    <Route path={'/checkout'} element={<PrivateRoute component={<Checkout />} />} />
+                    <Route path={'/checkout/success'} element={<Success />} />
+                    <Route path={'/signup'} element={<Signup />} />
+                    <Route path={'/contact'} element={<Contact />} />
+                    <Route path={'/shipping'} element={<Shipment />} />
+                    <Route path={'/shipping/:id'} element={<ShipmentId />} />
+                    <Route path={'/login'} element={<Login />} />
+                    <Route path={'/forgot-password'} element={<ForgotPassword />} />
+                    <Route path={'/reset-password'} element={<ResetPassword />} />
+                    <Route path={'/orders'} element={<Order />} />
+                    <Route path={'/orders/:id'} element={<OrderId />} />
+                    <Route path={'/orders/:id/invoice'} element={<Invoice />} />
+                    <Route path={'/wishlist'} element={<PrivateRoute component={<Wishlist addProductToCart={addProductToCart} />} />} />
+                    <Route path={'/admin'} element={<PrivateRoute role={'ADMIN'} component={<Admin />} />} />
+                    <Route path={'/admin/orders'}
+                        element={<PrivateRoute role={'ADMIN'} component={<AdminOrders />} />} />
+                    <Route path={'/admin/orders/update'}
+                        element={<PrivateRoute role={'ADMIN'} component={<AdminUpdateOrder />} />} />
+                    <Route path={'/admin/orders/new'}
+                        element={<PrivateRoute role={'ADMIN'} component={<AdminNewOrder />} />} />
+                    <Route path={'/admin/shipping'}
+                        element={<PrivateRoute role={'ADMIN'} component={<AdminShipping />} />} />
+                    <Route path={'/admin/shipping/update'}
+                        element={<PrivateRoute role={'ADMIN'} component={<AdminUpdateShipping />} />} />
+                    <Route path={'/admin/products/new'}
+                        element={<PrivateRoute role={'ADMIN'} component={<AdminNewProduct />} />} />
+                    <Route path={'/admin/products/update'}
+                        element={<PrivateRoute role={'ADMIN'} component={<AdminUpdate />} />} />
+                    <Route path={'/admin/products/update/success'}
+                        element={<PrivateRoute role={'ADMIN'} component={<AdminUpdateSuccess />} />} />
+                    <Route path={'/admin/orders/:id'}
+                        element={<PrivateRoute role={'ADMIN'} component={<AdminViewOrder />} />} />
+                    <Route path={'/401'} element={<Error401 />} />
+                    <Route path={'/*'} element={<Error404 />} />
+                </Routes>
+            </Suspense>
             <Footer />
         </BrowserRouter>
     );

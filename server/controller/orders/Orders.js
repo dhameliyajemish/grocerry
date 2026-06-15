@@ -8,8 +8,7 @@ import PDFDocument from "pdfkit";
 import {
     PRODUCTS_BASEURL,
     NOTIFICATIONS_BASEURL,
-    SHIPPING_BASEURL,
-    WEBSITE_BASE_URL
+    SHIPPING_BASEURL
 } from "../../services/BaseURLs.js";
 
 import generateId from "../../utils/generateId.js";
@@ -156,9 +155,19 @@ export const updateOrder = async (req, res) => {
 
         try {
             const Shipments = (await import('../../model/Shipments.js')).default;
-            if (['SHIPPED', 'DELIVERED'].includes(status)) {
-                await Shipments.findOneAndUpdate({ order_id: req.params.id }, { status }, { new: true });
-            }
+            
+            let shipmentStatus = status;
+            if (status === 'CONFIRMED') shipmentStatus = 'CREATED';
+            if (status === 'SHIPPED') shipmentStatus = 'OUT_FOR_DELIVERY'; // Map legacy SHIPPED to new enum
+            
+            const updatedShipment = await Shipments.findOneAndUpdate(
+                { order_id: req.params.id }, 
+                { status: shipmentStatus }, 
+                { new: true }
+            );
+            console.log("order.status:", updated.status);
+            console.log("shipment.status:", updatedShipment?.status);
+            console.log(`Shipment for Order ${req.params.id} synced to ${shipmentStatus}`);
         } catch (e) { console.warn("Shipment sync fail:", e.message); }
 
         res.status(200).json(updated);
@@ -174,6 +183,43 @@ export const getOrderHistory = async (req, res) => {
         const orders = await Order.find({ user_id: req.user.id }).sort({ ordered_at: -1 });
         res.status(200).json(orders);
     } catch (error) { res.status(500).json({ message: error.message }); }
+};
+
+/* =========================
+   USER: CANCEL ORDER
+========================= */
+export const cancelOrderUser = async (req, res) => {
+    try {
+        if (!req.user?.id) return res.status(401).json({ message: "Unauthorized" });
+        
+        const orderId = req.params.id;
+        const order = await Order.findOne({ order_id: orderId, user_id: req.user.id });
+        
+        if (!order) return res.status(404).json({ message: "Order not found or unauthorized" });
+
+        if (['OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'].includes(order.status)) {
+            return res.status(400).json({ message: `Order cannot be cancelled at this stage (${order.status}).` });
+        }
+
+        const updatedOrder = await Order.findOneAndUpdate(
+            { order_id: orderId }, 
+            { status: "CANCELLED" }, 
+            { new: true }
+        );
+
+        try {
+            const Shipments = (await import('../../model/Shipments.js')).default;
+            await Shipments.findOneAndUpdate(
+                { order_id: orderId }, 
+                { status: "CANCELLED" }, 
+                { new: true }
+            );
+        } catch (e) { console.warn("Shipment cancel sync fail:", e.message); }
+
+        res.status(200).json(updatedOrder);
+    } catch (error) { 
+        res.status(500).json({ message: error.message }); 
+    }
 };
 
 /* =========================
@@ -250,12 +296,11 @@ export const sendInvoiceEmail = async (req, res) => {
             if (data && data.length > 0) {
                 products = data.map(product => {
                     const orderProduct = order.products.find(p => (p.product_id || p.id) === product.id);
-                    const imageUrl = product.image || orderProduct?.image;
                     return {
                         ...orderProduct, ...product,
                         quantity: orderProduct ? orderProduct.quantity : 1,
                         price: product.pricing?.selling_price || product.pricing?.mrp || product.price || orderProduct?.price || 0,
-                        image: imageUrl
+                        image: product.image || orderProduct?.image
                     };
                 });
             }
@@ -275,36 +320,29 @@ export const sendInvoiceEmail = async (req, res) => {
 };
 
 /* =========================
-    PDF GENERATION HELPER
- ========================= */
+   PDF GENERATION HELPER
+========================= */
 const generateInvoicePDFBuffer = async (order, products, GST_RATE) => {
-    console.log(`[PDF] Generating for ${order.order_id} with ${products.length} products`);
-    
-    const productImages = await Promise.all(products.map(async (p, idx) => {
-        let imgUrl = p?.image;
-        console.log(`[PDF] Product ${idx}: ${p.name}, image: ${imgUrl}`);
+    const productImages = await Promise.all(products.map(async (p) => {
+        let imgUrl = p.image;
+        if (!imgUrl || typeof imgUrl !== 'string') return null;
         
-        if (!imgUrl || typeof imgUrl !== 'string') {
-            return null;
-        }
-        
-        const baseUrls = ['https://grocerapp.vercel.app', 'http://localhost:3000'];
-        
-        for (const baseUrl of baseUrls) {
-            let urlToTry = imgUrl.startsWith('http') ? imgUrl : `${baseUrl}${imgUrl}`;
+        if (imgUrl.startsWith('/')) {
             try {
-                console.log(`[PDF] Fetching: ${urlToTry}`);
-                const response = await axios.get(urlToTry, { responseType: 'arraybuffer', timeout: 8000 });
-                if (response.data && response.data.length > 100) {
-                    console.log(`[PDF] Image loaded: ${response.data.length} bytes`);
-                    return Buffer.from(response.data);
-                }
+                const urlObj = new URL(PRODUCTS_BASEURL);
+                imgUrl = `${urlObj.origin}${imgUrl}`;
             } catch (e) {
-                console.log(`[PDF] Error: ${e.message}`);
+                imgUrl = `${WEBSITE_BASE_URL}${imgUrl}`;
             }
         }
-        
-        return null;
+
+        try {
+            const response = await axios.get(imgUrl, { responseType: 'arraybuffer', timeout: 8000 });
+            return Buffer.from(response.data, 'binary');
+        } catch (e) {
+            console.warn(`Failed to fetch image for ${p.name || p.id} from ${imgUrl}: ${e.message}`);
+            return null;
+        }
     }));
 
     return new Promise((resolve, reject) => {

@@ -14,6 +14,7 @@ import notifications from "./routes/notifications.js";
 import cart from "./routes/cart.js";
 import me from "./routes/me.js";
 import admin from "./routes/admin.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 import Stripe from "stripe";
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -92,6 +93,7 @@ apiRouter.get('/status', (req, res) => {
     });
 });
 
+app.use('/api/reviews', reviewRoutes);
 app.use('/api', apiRouter);
 
 // --- 5. error & Catch-all Handlers ---
@@ -142,8 +144,12 @@ optionalEnv.forEach(key => {
 
 let server;
 mongoose.connect(process.env.MONGO_URI, mongooseOptions)
-    .then(() => {
-        console.log("Database Connected Successfully");
+    .then((conn) => {
+        console.log("==========================================");
+        console.log("DATABASE CONNECTION SUCCESS");
+        console.log(`Host: ${conn.connection.host}`);
+        console.log(`Database Name: ${conn.connection.name}`);
+        console.log("==========================================");
         server = app.listen(PORT, () => console.log(`Server executing on port ${PORT}`));
     })
     .catch((error) => {

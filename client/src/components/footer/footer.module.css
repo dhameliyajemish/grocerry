@@ -1,15 +1,16 @@
 .wrapper {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: var(--BG_SECONDARY);
     display: flex;
     flex-direction: column;
-    color: white;
+    color: var(--TEXT_PRIMARY);
+    border-top: 1px solid var(--BORDER_COLOR);
 }
 
 .top-wrapper {
     display: flex;
     flex-direction: column;
-    padding: 3em 1.5em;
-    gap: 2.5em;
+    padding: 4em 2em;
+    gap: 3em;
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
@@ -20,147 +21,153 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 1em;
+    gap: 1.5em;
 }
 
 .logo-wrapper {
-    --SIZE: 5em;
-    width: var(--SIZE);
-    height: var(--SIZE);
+    height: 60px;
 }
 
 .logo-wrapper img {
+    height: 100%;
     object-fit: contain;
 }
 
 .brand-desc {
-    color: #a0aec0;
+    color: var(--TEXT_SECONDARY);
     font-size: 0.95rem;
     line-height: 1.6;
-    max-width: 300px;
+    max-width: 320px;
+}
+
+.social-links {
+    display: flex;
+    gap: 1em;
+    margin-top: 0.5em;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--SURFACE_HOVER);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 10px;
+}
+
+.social-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background: var(--PRIMARY_ALPHA_10);
+    transform: translateY(-3px);
+}
+
+.social-icon:hover img {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+[data-theme='dark'] .social-icon img {
+    filter: invert(1) grayscale(100%);
+}
+
+[data-theme='dark'] .social-icon:hover img {
+    filter: invert(0) grayscale(0%);
 }
 
 .links-section {
     display: flex;
     flex-direction: column;
-    gap: 2em;
+    gap: 2.5em;
     text-align: center;
 }
 
 .links-column {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 1.2em;
 }
 
 .page-title {
     font-weight: 600;
     font-size: 1.1rem;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: var(--TEXT_PRIMARY);
+    letter-spacing: 0.5px;
 }
 
 .pages-list {
     display: flex;
     flex-direction: column;
-    gap: 0.8em;
+    gap: 1em;
 }
 
 .pages-list a {
-    color: #a0aec0;
+    color: var(--TEXT_SECONDARY);
     text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    position: relative;
-    padding-left: 1.2em;
-}
-
-.pages-list a:before {
-    content: '→';
-    color: #25D366;
-    position: absolute;
-    left: 0;
-    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
 }
 
 .pages-list a:hover {
-    color: #fff;
+    color: var(--PRIMARY);
     transform: translateX(5px);
 }
 
-.pages-list a:hover:before {
-    margin-left: 5px;
-}
-
 .bottom-bar {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--BORDER_COLOR);
     padding: 1.5em;
     display: flex;
     justify-content: center;
     text-align: center;
+    background: var(--SURFACE);
 }
 
 .copyright {
-    color: #718096;
-    font-size: 0.85rem;
+    color: var(--TEXT_MUTED);
+    font-size: 0.9rem;
 }
 
 @media screen and (min-width: 768px) {
     .top-wrapper {
         flex-direction: row;
         justify-content: space-between;
-        padding: 4em 3em;
-        gap: 3em;
+        padding: 5em 3em;
+        gap: 4em;
     }
 
     .brand-section {
         align-items: flex-start;
         text-align: left;
         flex: 1;
-        max-width: 300px;
-    }
-
-    .brand-desc {
-        max-width: 100%;
+        max-width: 350px;
     }
 
     .links-section {
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-around;
         flex: 2;
         gap: 2em;
         text-align: left;
-    }
-
-    .bottom-bar {
-        justify-content: center;
-        padding: 1.5em 3em;
     }
 }
 
 @media screen and (min-width: 1024px) {
     .top-wrapper {
-        padding: 4em 5em;
+        padding: 5em 4em;
     }
 
     .links-section {
-        gap: 4em;
-    }
-
-    .page-title {
-        font-size: 1.2rem;
-        margin-bottom: 0.5em;
-    }
-
-    .pages-list a {
-        font-size: 1rem;
-    }
-}
-
-@media screen and (min-width: 1440px) {
-    .top-wrapper {
-        max-width: 1400px;
-        margin: 0 auto;
+        gap: 5em;
+        justify-content: flex-end;
     }
 }

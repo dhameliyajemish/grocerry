@@ -7,6 +7,9 @@ export const getShipmentId = async (req, res) => {
     console.log(`[Shipping] Fetching shipment for order_id: ${id}`);
 
     try {
+        console.log("Order From DB:", await Order.findOne({ order_id: id }));
+        console.log("Shipment From DB:", await Shipments.findOne({ order_id: id }));
+        
         console.log(`[Shipping] About to query Shipments collection...`);
         let your_shipment = await Shipments.findOne({ "order_id": id });
         console.log(`[Shipping] Query completed. Found existing shipment:`, your_shipment ? 'yes' : 'no');
@@ -78,21 +81,40 @@ export const updateShipments = async (req, res) => {
         if (!status)
             return res.status(400).json({ message: "Please provide the new status" });
 
-        if (status !== 'CREATED' && status !== 'SHIPPED' && status !== 'DELIVERED' && status !== 'RETURNED')
+        const validStatuses = ['CREATED', 'PROCESSING', 'PACKED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'RETURNED', 'CANCELLED'];
+        if (!validStatuses.includes(status))
             return res.status(400).json({ message: "Please re-type the status correctly " });
 
         const order_id = req.params.id;
 
-        const shipmentResponse = await Shipments.findOneAndUpdate({ order_id }, { status });
+        console.log(`[Shipping Update] Before update for order: ${order_id}, new status: ${status}`);
+        const beforeShipment = await Shipments.findOne({ order_id });
+        console.log(`[Shipping Update] Current status: ${beforeShipment?.status}`);
+
+        const shipmentResponse = await Shipments.findOneAndUpdate(
+            { order_id: order_id }, 
+            { status: status }, 
+            { new: true }
+        );
+
+        console.log(`[Shipping Update] After update for order: ${order_id}`);
+        console.log(`[Shipping Update] New status saved: ${shipmentResponse?.status}`);
 
         // --- SYNC WITH ORDERS ---
         try {
-            if (['SHIPPED', 'DELIVERED'].includes(status)) {
+            if (['PACKED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'].includes(status)) {
                 await Order.findOneAndUpdate(
                     { order_id: order_id },
                     { status: status }
                 );
                 console.log(`Order ${order_id} synced to ${status} via Shipment update`);
+            } else if (status === 'PROCESSING' || status === 'CREATED') {
+                // Map to CONFIRMED for the Order model
+                await Order.findOneAndUpdate(
+                    { order_id: order_id },
+                    { status: 'CONFIRMED' }
+                );
+                console.log(`Order ${order_id} synced to CONFIRMED via Shipment update (${status})`);
             }
         } catch (syncErr) {
             console.warn("Order sync failed (non-critical):", syncErr.message);
@@ -100,6 +122,7 @@ export const updateShipments = async (req, res) => {
 
         return res.status(200).json(shipmentResponse);
     } catch (e) {
+        console.error("[Shipping Update Error]", e);
         return res.status(400).json({ message: e.message });
     }
 }

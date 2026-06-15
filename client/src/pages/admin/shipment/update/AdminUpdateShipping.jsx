@@ -24,7 +24,7 @@ const AdminUpdateShipping = () => {
     const [failureMessage, setFailureMessage] = useState("");
     const [error, setError] = useState("");
     const dispatch = useDispatch();
-    const options = ['CREATED', 'SHIPPED', 'DELIVERED', 'RETURNED'];
+    const options = ['CREATED', 'PROCESSING', 'PACKED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'RETURNED', 'CANCELLED'];
     const location = useLocation();
 
     useEffect(() => {
@@ -130,7 +130,9 @@ const AdminUpdateShipping = () => {
                         onClick={() => {
                             const statusMessages = {
                                 'CREATED': `📦 Your order #${shipping.order_id} has been confirmed! We're preparing your items.`,
-                                'SHIPPED': `🚚 Your order #${shipping.order_id} has been shipped! Track: ${window.location.origin}/shipping/${shipping.order_id}`,
+                                'PROCESSING': `⏳ Your order #${shipping.order_id} is currently being processed.`,
+                                'PACKED': `🎒 Your order #${shipping.order_id} is packed and ready for dispatch.`,
+                                'OUT_FOR_DELIVERY': `🚚 Your order #${shipping.order_id} is out for delivery! Track: ${window.location.origin}/shipping/${shipping.order_id}`,
                                 'DELIVERED': `✅ Your order #${shipping.order_id} has been delivered! Thank you for shopping with us.`,
                                 'RETURNED': `↩️ Your order #${shipping.order_id} has been returned. Contact us for assistance.`
                             };

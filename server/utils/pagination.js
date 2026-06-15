@@ -1,9 +1,8 @@
 const Pagination = (page, JSON, itemsPerPage = 20) => {
     try {
-        const array = [];
-        for (const i in JSON) {
-            array.push(JSON[i]);
-        }
+        // Fix: Use Array.from or for...of instead of for...in to prevent pushing prototype functions 
+        // into the array when dealing with Mongoose Document arrays.
+        const array = Array.from(JSON || []);
 
         const arraySize = array.length;
         let desiredPage = 0;

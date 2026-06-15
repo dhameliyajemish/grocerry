@@ -7,7 +7,11 @@ const ShipmentsSchema = new Schema({
     total: Number,
     address: Object,
     phone_number: String,
-    status: { type: String, enum: ['CREATED', 'SHIPPED', 'DELIVERED', 'RETURNED'], default: "CREATED" },
+    status: { 
+        type: String, 
+        enum: ['CREATED', 'PROCESSING', 'PACKED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'RETURNED', 'CANCELLED'], 
+        default: "CREATED" 
+    },
     ordered_at: Date
 });
 

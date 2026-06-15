@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Products from '../../model/Products.js';
 import jwt from 'jsonwebtoken';
 import Pagination from '../../utils/pagination.js';
@@ -43,29 +44,27 @@ export const updateQuantity = async (req, res) => {
 
 export const ShowProductsPerPage = async (req, res) => {
     try {
-        let products = [];
-
-        const itemsPerPage = 20;
-
-        // If there is category: just filter them by the category,
-        // then do the pagination on it.
-        console.log(`[ShowProductsPerPage] Category param: ${req.query.category}`);
-        if (req.query.category) {
-            products = await ShowProductsPerCategory(req.query.category, products);
-        } else
-            products = await Products.find();
-        
-        console.log(`[ShowProductsPerPage] Found ${products.length} products in database`);
-        if (products.length > 0) {
-            console.log(`[ShowProductsPerPage] First product:`, JSON.stringify(products[0], null, 2));
+        console.log("=== ATLAS DEBUG LOGS ===");
+        if (mongoose.connection.readyState === 1 && mongoose.connection.db) {
+            console.log("DB:", mongoose.connection.db.databaseName);
+            console.log("Collections:", await mongoose.connection.db.listCollections().toArray());
+        } else {
+            console.log("DB: Not connected yet.");
         }
         
-        const numberOfPages = Math.ceil(products.length / itemsPerPage);
-        // in both cases you have to paginate the products
-        products = Pagination(req.query.page, products, itemsPerPage);
+        console.log("Model Collection:", Products.collection.name);
+        console.log("Total Count:", await Products.countDocuments());
+        console.log("FindOne:", await Products.findOne());
+        
+        // TEMPORARILY REMOVED PAGINATION AND CATEGORY FILTER
+        // Fetching all products directly to test if MongoDB Atlas returns anything
+        const products = await Products.find({});
+        console.log("Find All Length:", products.length);
+        console.log("Find All Data:", products);
+        console.log("========================");
 
-        console.log(`[ShowProductsPerPage] Returning ${products.length} products, total_pages: ${numberOfPages}`);
-        res.status(200).json({ total_pages: numberOfPages, products: products });
+        // Return everything directly without pagination
+        res.status(200).json({ total_pages: 1, products: products });
 
     } catch (error) {
         console.error(`[ShowProductsPerPage] Error:`, error.message);
@@ -75,14 +74,19 @@ export const ShowProductsPerPage = async (req, res) => {
 
 const ShowProductsPerCategory = async (category, products) => {
     try {
-        // Handle category names with spaces (e.g., "Home%20Care" -> "HomeCare")
-        const normalizedCategory = category.replace(/%20/g, ' ').replace(/\s+/g, '');
+        // Handle URL encoded category string safely without stripping valid spaces
+        const decodedCategory = decodeURIComponent(category);
         
+        console.log(`[ShowProductsPerCategory] Requested Category filter value: "${decodedCategory}"`);
+        
+        // Use exact match regex anchored with ^ and $ for exact ignoring case
         products = await Products.find({ 
-            "category": { $regex: normalizedCategory, $options: "i" }
+            "category": { $regex: `^${decodedCategory}$`, $options: "i" }
         });
+        
+        console.log(`[ShowProductsPerCategory] Products found for category "${decodedCategory}": ${products.length}`);
+        
         return products;
-
     } catch (error) {
         throw error;
     }

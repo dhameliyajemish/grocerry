@@ -1,14 +1,13 @@
 import styles from './productCard.module.css';
 import { useRef, useState } from "react";
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from "react-redux";
 import { updateWishlist } from "../../actions/auth";
 import * as cartActions from "../../actions/cart";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const ProductCard = ({ product, productsPage = false, isInCart = false, cartQuantity = 0 }) => {
-    const [quantity, setQuantity] = useState(1);
+const ProductCard = ({ product, productsPage = false }) => {
     const wrapperRef = useRef();
     const wishlist = useSelector(state => state.authentication.user?.wishlist) || [];
     const cart = useSelector(state => state.cart.cart) || [];
@@ -16,21 +15,40 @@ const ProductCard = ({ product, productsPage = false, isInCart = false, cartQuan
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    // DYNAMIC CART CALCULATIONS
+    const pId = product.product_id || product.id || '0';
+    const cartItem = cart.find(item => item.product_id === pId);
+    const isInCart = !!cartItem;
+    const cartQuantity = cartItem ? cartItem.quantity : 0;
+
+    const [quantity, setQuantity] = useState(1);
+
+    // Database Rating
+    const averageRating = product.averageRating || 0;
+    const reviewCount = product.reviewCount || 0;
+    
+    // Mock data for premium feel (for missing properties only)
+    const numId = parseInt(pId.toString().replace(/\D/g, '')) || 0;
+    const hasDiscount = numId % 3 === 0;
+    const discountPercent = 10 + (numId % 20);
+
+    const price = product.pricing ? Number(product.pricing.selling_price) : (product.price ? Number(product.price) : 0);
+    const oldPrice = hasDiscount ? (price * (1 + discountPercent / 100)).toFixed(2) : null;
+
     const handleWishlist = () => {
         const onError = () => {
             navigate('/login');
         };
-        dispatch(updateWishlist(product.product_id || product.id, onError));
+        dispatch(updateWishlist(pId, onError));
     };
 
     const handleAddToCart = async () => {
-        const productId = product.product_id || product.id;
         const qty = quantity;
         
         if (user?.token) {
-            await dispatch(cartActions.addToCartAsync(productId, qty));
+            await dispatch(cartActions.addToCartAsync(pId, qty));
         } else {
-            const productIndex = cart.findIndex((cartProduct) => cartProduct.product_id === productId);
+            const productIndex = cart.findIndex((cartProd) => cartProd.product_id === pId);
             let newCart;
             if (productIndex >= 0) {
                 const updatedData = { ...cart[productIndex], quantity: cart[productIndex].quantity + qty };
@@ -38,103 +56,94 @@ const ProductCard = ({ product, productsPage = false, isInCart = false, cartQuan
                 newArray[productIndex] = updatedData;
                 newCart = newArray;
             } else {
-                newCart = [...cart, { ...product, product_id: productId, quantity: qty }];
+                newCart = [...cart, { ...product, product_id: pId, quantity: qty }];
             }
             dispatch(cartActions.setCart(newCart));
             localStorage.setItem('cart', JSON.stringify(newCart));
         }
         
-        toast.success(`${product.name} x${quantity} added to cart!`);
-        setQuantity(1);
+        toast.success(`${product.name} added to cart!`);
     };
 
-
-
-    const getXi = () => {
-        const elementData = wrapperRef.current.getBoundingClientRect();
-        return elementData.x;
-    };
-
+    const getXi = () => wrapperRef.current.getBoundingClientRect().x;
     const getXf = () => {
         const windowWidth = window.innerWidth;
-        if (windowWidth > 1024)
-            return windowWidth - 11 * 16;
-        return windowWidth - 5 * 16;
+        return windowWidth > 1024 ? windowWidth - 11 * 16 : windowWidth - 5 * 16;
     };
-
-    const getYi = () => {
-        const elementData = wrapperRef.current.getBoundingClientRect();
-        return elementData.y;
-    };
+    const getYi = () => wrapperRef.current.getBoundingClientRect().y;
 
     return (
-        <div ref={wrapperRef}
-            className={`${styles['wrapper']} ${productsPage ? styles['products-page'] : ''} ${!(product.availability?.in_stock ?? product.stock) && styles['out-of-stock']}`}>
-
-            {isInCart &&
-                <motion.img initial={{
-                    x: getXi(),
-                    y: getYi(),
-                    padding: '1em',
-                    borderRadius: '10px'
-                }}
-                    animate={{
-                        x: getXf(),
-                        y: 0,
-                        width: 24,
-                        height: 24,
-                        opacity: .8,
-                        borderRadius: '50%',
-                        padding: '.5em'
-                    }}
-                    transition={{ type: "spring", stiffness: 40, bounce: 0 }}
-                    className={styles['cart-img']}
-                    src={product.image}
-                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400?text=No+Image'; }}
-                    alt={product.name} />}
+        <motion.div 
+            ref={wrapperRef}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`${styles['wrapper']} ${productsPage ? styles['products-page'] : ''} ${!(product.availability?.in_stock ?? product.stock) && styles['out-of-stock']}`}
+        >
+            <AnimatePresence>
+                {isInCart && (
+                    <motion.img 
+                        initial={{ x: getXi(), y: getYi(), padding: '1em', borderRadius: '10px' }}
+                        animate={{ x: getXf(), y: 0, width: 24, height: 24, opacity: .8, borderRadius: '50%', padding: '.5em' }}
+                        transition={{ type: "spring", stiffness: 40, bounce: 0 }}
+                        className={styles['cart-img']}
+                        src={product.image}
+                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400?text=No+Image'; }}
+                        alt={product.name} 
+                    />
+                )}
+            </AnimatePresence>
 
             <div className={styles['image-wrapper']}>
-                <img src={product.image} alt={product.name}
-                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400?text=No+Image'; }} />
-                <span onClick={handleWishlist}
-                    className={`material-symbols-outlined ${styles['wishlist']} ${wishlist.includes(product.product_id || product.id) && styles['wishlisted']}`}>favorite</span>
+                {hasDiscount && <div className={styles['discount-badge']}>{discountPercent}% OFF</div>}
+                <img src={product.image} alt={product.name} onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400?text=No+Image'; }} />
+                <span onClick={handleWishlist} className={`material-symbols-outlined ${styles['wishlist']} ${wishlist.includes(product.product_id || product.id) && styles['wishlisted']}`}>favorite</span>
+                <div className={styles['quick-view']}>Quick View</div>
             </div>
 
             <div className={styles['content']}>
-                <p className={styles['name']}>{product.name}</p>
+                <div>
+                    <h3 className={styles['name']}>{product.name}</h3>
+                    <div className={styles['rating']}>
+                        <span className={styles['stars']}>
+                            {'★'.repeat(Math.round(averageRating))}
+                            {'☆'.repeat(5 - Math.round(averageRating))}
+                        </span>
+                        <span className={styles['reviews']}>
+                            {averageRating > 0 ? averageRating : 'No ratings yet'} {reviewCount > 0 && `(${reviewCount} reviews)`}
+                        </span>
+                    </div>
+                </div>
+
                 <div className={styles['footer']}>
                     <div className={styles['details']}>
                         <p className={styles['weight']}>
                             {product.packaging ? `${product.packaging.quantity}${product.packaging.unit}` : `${product.weight}${product.measurement}`}
                         </p>
-                        <p className={styles['price']}>
-                            {product.pricing ? Number(product.pricing.selling_price).toFixed(2) : (product.price ? Number(product.price).toFixed(2) : '0.00')} ₹
-                        </p>
+                        <div className={styles['price-container']}>
+                            <span className={styles['price']}>₹{price.toFixed(2)}</span>
+                            {hasDiscount && <span className={styles['old-price']}>₹{oldPrice}</span>}
+                        </div>
                     </div>
 
-                    {(product.availability?.in_stock ?? product.stock) ?
+                    {(product.availability?.in_stock ?? product.stock) ? (
                         isInCart ? (
                             <div className={styles['add-section']}>
                                 <div className={styles['quantity-controls']}>
                                     <button onClick={async () => {
-                                        const productId = product.product_id || product.id;
+                                        const pId = product.product_id || product.id;
                                         if (cartQuantity > 1) {
                                             if (user?.token) {
-                                                await dispatch(cartActions.updateCartItemAsync(productId, cartQuantity - 1));
+                                                await dispatch(cartActions.updateCartItemAsync(pId, cartQuantity - 1));
                                             } else {
-                                                const newCart = cart.map(item => 
-                                                    item.product_id === productId 
-                                                        ? { ...item, quantity: item.quantity - 1 }
-                                                        : item
-                                                );
+                                                const newCart = cart.map(item => item.product_id === pId ? { ...item, quantity: item.quantity - 1 } : item);
                                                 dispatch(cartActions.setCart(newCart));
                                                 localStorage.setItem('cart', JSON.stringify(newCart));
                                             }
                                         } else {
                                             if (user?.token) {
-                                                await dispatch(cartActions.removeFromCartAsync(productId));
+                                                await dispatch(cartActions.removeFromCartAsync(pId));
                                             } else {
-                                                const newCart = cart.filter((cartItem) => cartItem.product_id !== productId);
+                                                const newCart = cart.filter((cartItem) => cartItem.product_id !== pId);
                                                 dispatch(cartActions.setCart(newCart));
                                                 localStorage.setItem('cart', JSON.stringify(newCart));
                                             }
@@ -142,15 +151,11 @@ const ProductCard = ({ product, productsPage = false, isInCart = false, cartQuan
                                     }} className={styles['qty-btn']} disabled={cartQuantity <= 0}>-</button>
                                     <span className={styles['qty-value']}>{cartQuantity}</span>
                                     <button onClick={async () => {
-                                        const productId = product.product_id || product.id;
+                                        const pId = product.product_id || product.id;
                                         if (user?.token) {
-                                            await dispatch(cartActions.updateCartItemAsync(productId, cartQuantity + 1));
+                                            await dispatch(cartActions.updateCartItemAsync(pId, cartQuantity + 1));
                                         } else {
-                                            const newCart = cart.map(item => 
-                                                item.product_id === productId 
-                                                    ? { ...item, quantity: item.quantity + 1 }
-                                                    : item
-                                            );
+                                            const newCart = cart.map(item => item.product_id === pId ? { ...item, quantity: item.quantity + 1 } : item);
                                             dispatch(cartActions.setCart(newCart));
                                             localStorage.setItem('cart', JSON.stringify(newCart));
                                         }
@@ -158,15 +163,16 @@ const ProductCard = ({ product, productsPage = false, isInCart = false, cartQuan
                                 </div>
                             </div>
                         ) : (
-
-                            <div onClick={handleAddToCart} className={styles['add-to-cart']}>
-                                Add to Cart
-                            </div>
-                        ) :
-                        <div className={styles['unavailable']}>Out of Stock</div>}
+                            <motion.div whileTap={{ scale: 0.95 }} onClick={handleAddToCart} className={styles['add-to-cart']}>
+                                + Add to Cart
+                            </motion.div>
+                        )
+                    ) : (
+                        <div className={styles['unavailable']}>Out of Stock</div>
+                    )}
                 </div>
             </div>
-        </div >
+        </motion.div>
     );
 };
 

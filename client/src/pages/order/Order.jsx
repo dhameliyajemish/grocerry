@@ -3,13 +3,18 @@ import { useDispatch } from "react-redux";
 import { fetchOrderHistory } from "../../actions/orders";
 import styles from './order.module.css';
 import { Link } from "react-router-dom";
+import { cancelOrderUser } from "../../api/index";
+import { toast } from "react-hot-toast";
+import ReviewModal from "../../components/review-modal/ReviewModal";
 
 const Order = () => {
     const dispatch = useDispatch();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedOrderForReview, setSelectedOrderForReview] = useState(null);
 
-    useEffect(() => {
+    const loadOrders = () => {
+        setLoading(true);
         dispatch(fetchOrderHistory((data) => {
             setOrders(data);
             setLoading(false);
@@ -17,7 +22,23 @@ const Order = () => {
             console.log(err);
             setLoading(false);
         }));
+    };
+
+    useEffect(() => {
+        loadOrders();
     }, [dispatch]);
+
+    const handleCancelOrder = async (orderId) => {
+        if (!window.confirm("Are you sure you want to cancel this order?")) return;
+        
+        try {
+            await cancelOrderUser(orderId);
+            toast.success("Order Cancelled Successfully");
+            loadOrders(); // Refresh the list
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Failed to cancel order");
+        }
+    };
 
     if (loading) return <div className={styles.wrapper}>Loading...</div>;
 
@@ -43,7 +64,7 @@ const Order = () => {
                             <div className={styles.orderTotal} style={{ marginBottom: '10px', fontSize: '1.1em', fontWeight: 'bold' }}>
                                 Total: {order.total} ₹
                             </div>
-                            <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                 <Link to={`/orders/${order.order_id}`} className="btn1">View Details</Link>
                                 <Link to={`/shipping/${order.order_id}`} className="btn2">Track Shipment</Link>
                                 <button 
@@ -63,10 +84,52 @@ const Order = () => {
                                 >
                                     📱 Share
                                 </button>
+                                
+                                {order.status === "DELIVERED" && (
+                                    <button 
+                                        onClick={() => setSelectedOrderForReview(order)}
+                                        style={{ 
+                                            backgroundColor: '#FF9900', 
+                                            color: 'white',
+                                            border: 'none',
+                                            padding: '8px 12px',
+                                            borderRadius: '5px',
+                                            cursor: 'pointer',
+                                            fontSize: '12px',
+                                            fontWeight: 'bold'
+                                        }}
+                                    >
+                                        ⭐ Write Review
+                                    </button>
+                                )}
+
+                                {(order.status === "CREATED" || order.status === "PROCESSING" || order.status === "PACKED") && (
+                                    <button 
+                                        onClick={() => handleCancelOrder(order.order_id)}
+                                        style={{ 
+                                            backgroundColor: '#ef4444', 
+                                            color: 'white',
+                                            border: 'none',
+                                            padding: '8px 12px',
+                                            borderRadius: '5px',
+                                            cursor: 'pointer',
+                                            fontSize: '12px'
+                                        }}
+                                    >
+                                        Cancel Order
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}
                 </div>
+            )}
+
+            {selectedOrderForReview && (
+                <ReviewModal 
+                    order={selectedOrderForReview} 
+                    onClose={() => setSelectedOrderForReview(null)} 
+                />
             )}
         </div>
     );

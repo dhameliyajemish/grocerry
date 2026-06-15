@@ -9,7 +9,7 @@ import {
     ADMIN_BASEURL,
 } from "./BaseURLs";
 
-const API = axios.create();
+const API = axios.create({ baseURL: "http://localhost:5000" });
 
 API.interceptors.request.use(
     (req) => {
@@ -154,6 +154,9 @@ export const fetchOrder = (id) =>
 export const updateOrder = (id, status) =>
     API.patch(`${ORDERS_BASEURL}/${id}`, { status });
 
+export const cancelOrderUser = (id) =>
+    API.patch(`${ORDERS_BASEURL}/${id}/cancel`);
+
 export const createOrderAdmin = (data) =>
     API.post(`${ORDERS_BASEURL}/admin`, data);
 
@@ -196,5 +199,15 @@ export const updateProduct = (productId, data) =>
 
 export const deleteProduct = (productId) =>
     API.delete(`${ADMIN_BASEURL}/products/${productId}`);
+
+/* ========================= REVIEWS ========================= */
+export const submitReview = (data) =>
+    axios.post("http://localhost:5000/api/reviews", data);
+
+export const fetchOrderReviews = (orderId) =>
+    axios.get("http://localhost:5000/api/reviews/order/" + orderId);
+
+export const fetchProductReviews = (productId) =>
+    API.get(`/api/reviews/product/${productId}`);
 
 export default API;

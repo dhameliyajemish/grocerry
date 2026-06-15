@@ -39,7 +39,11 @@ logToFile("Payments.js module loaded with Direct Axios Implementation");
  * Step 1: Create Razorpay Order (Direct Axios)
  */
 export const createCheckoutSession = async (req, res) => {
-    logToFile("createCheckoutSession started", { body: req.body });
+    logToFile("createCheckoutSession started", { 
+        body: req.body,
+        RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+        RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET ? "set" : "missing"
+    });
     try {
         let decodedCart;
         try {
@@ -68,6 +72,12 @@ export const createCheckoutSession = async (req, res) => {
         const key_id = (process.env.RAZORPAY_KEY_ID || "").trim();
         const key_secret = (process.env.RAZORPAY_KEY_SECRET || "").trim();
 
+        logToFile("RAZORPAY_KEYS_CHECK", { 
+            key_id_from_env: key_id, 
+            key_secret_exists: !!key_secret,
+            env_all: Object.keys(process.env).filter(k => k.includes('RAZORPAY') || k.includes('razorpay'))
+        });
+
         if (!key_id || !key_secret) {
             logToFile("MISSING RAZORPAY KEYS");
             return res.status(500).json({ message: "Razorpay keys are missing in .env" });
@@ -78,7 +88,7 @@ export const createCheckoutSession = async (req, res) => {
         const options = {
             amount: amount,
             currency: "INR",
-            receipt: order_id,
+            receipt: order_id
         };
 
         logToFile("Creating Razorpay order via Axios", { options, key_id });

@@ -7,8 +7,8 @@ import { postOrder, postOrderCOD, verifyRazorpayPayment } from "../../actions/or
 
 const Checkout = () => {
     const [error, setError] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('COD'); // 'COD', 'UPI', 'CARD'
-    const [isLoading, setIsLoading] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('COD'); 
+       const [isLoading, setIsLoading] = useState(false);
 
     const fname = useRef();
     const lname = useRef();
@@ -91,7 +91,6 @@ const Checkout = () => {
         if (paymentMethod === 'COD') {
             dispatch(postOrderCOD(cart.token, data, onCODSuccess, onError));
         } else {
-            // Razorpay flow
             const onRazorpayOrderSuccess = (resData) => {
                 const options = {
                     key: resData.key_id,
