@@ -62,12 +62,12 @@ const productSchema = new Schema(
             }
         },
 
-        averageRating: {
+        rating: {
             type: Number,
             default: 0
         },
 
-        reviewCount: {
+        numReviews: {
             type: Number,
             default: 0
         },

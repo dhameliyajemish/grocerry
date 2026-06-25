@@ -1,11 +1,12 @@
 import styles from './productCard.module.css';
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from "react-redux";
 import { updateWishlist } from "../../actions/auth";
 import * as cartActions from "../../actions/cart";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import StarRating from '../star-rating/StarRating';
 
 const ProductCard = ({ product, productsPage = false }) => {
     const wrapperRef = useRef();
@@ -21,11 +22,11 @@ const ProductCard = ({ product, productsPage = false }) => {
     const isInCart = !!cartItem;
     const cartQuantity = cartItem ? cartItem.quantity : 0;
 
-    const [quantity, setQuantity] = useState(1);
+    const quantity = 1;
 
     // Database Rating
-    const averageRating = product.averageRating || 0;
-    const reviewCount = product.reviewCount || 0;
+    const averageRating = Number(product.rating) || 0;
+    const reviewCount = Number(product.numReviews) || 0;
     
     // Mock data for premium feel (for missing properties only)
     const numId = parseInt(pId.toString().replace(/\D/g, '')) || 0;
@@ -65,12 +66,12 @@ const ProductCard = ({ product, productsPage = false }) => {
         toast.success(`${product.name} added to cart!`);
     };
 
-    const getXi = () => wrapperRef.current.getBoundingClientRect().x;
+    const getXi = () => wrapperRef.current?.getBoundingClientRect().x || 0;
     const getXf = () => {
         const windowWidth = window.innerWidth;
         return windowWidth > 1024 ? windowWidth - 11 * 16 : windowWidth - 5 * 16;
     };
-    const getYi = () => wrapperRef.current.getBoundingClientRect().y;
+    const getYi = () => wrapperRef.current?.getBoundingClientRect().y || 0;
 
     return (
         <motion.div 
@@ -95,21 +96,30 @@ const ProductCard = ({ product, productsPage = false }) => {
 
             <div className={styles['image-wrapper']}>
                 {hasDiscount && <div className={styles['discount-badge']}>{discountPercent}% OFF</div>}
-                <img src={product.image} alt={product.name} onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400?text=No+Image'; }} />
+                <img 
+                    src={product.image} 
+                    alt={product.name} 
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400?text=No+Image'; }} 
+                    onClick={() => navigate(`/product/${pId}`)}
+                    style={{ cursor: 'pointer' }}
+                />
                 <span onClick={handleWishlist} className={`material-symbols-outlined ${styles['wishlist']} ${wishlist.includes(product.product_id || product.id) && styles['wishlisted']}`}>favorite</span>
-                <div className={styles['quick-view']}>Quick View</div>
+                <div className={styles['quick-view']} onClick={() => navigate(`/product/${pId}`)}>Quick View</div>
             </div>
 
             <div className={styles['content']}>
                 <div>
-                    <h3 className={styles['name']}>{product.name}</h3>
-                    <div className={styles['rating']}>
-                        <span className={styles['stars']}>
-                            {'★'.repeat(Math.round(averageRating))}
-                            {'☆'.repeat(5 - Math.round(averageRating))}
-                        </span>
-                        <span className={styles['reviews']}>
-                            {averageRating > 0 ? averageRating : 'No ratings yet'} {reviewCount > 0 && `(${reviewCount} reviews)`}
+                    <h3 
+                        className={styles['name']} 
+                        onClick={() => navigate(`/product/${pId}`)}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        {product.name}
+                    </h3>
+                    <div className={styles['rating']} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <StarRating initialRating={averageRating} readonly size="18px" />
+                        <span className={styles['reviews']} style={{ fontSize: '0.85em', color: '#666' }}>
+                            {averageRating > 0 ? averageRating.toFixed(1) : 'No ratings'} {reviewCount > 0 && `(${reviewCount})`}
                         </span>
                     </div>
                 </div>

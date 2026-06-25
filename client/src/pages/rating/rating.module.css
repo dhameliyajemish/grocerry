@@ -1,0 +1,77 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 2rem 1rem;
+    background-color: var(--BG_SECONDARY);
+}
+
+.card {
+    background-color: var(--SURFACE);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: var(--SHADOW_MD);
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.title {
+    font-size: 1.8rem;
+    color: var(--TEXT_PRIMARY);
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.productName {
+    font-size: 1.1rem;
+    color: var(--TEXT_SECONDARY);
+    text-align: center;
+    font-weight: 500;
+}
+
+.ratingWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.ratingText {
+    font-size: 1rem;
+    color: var(--TEXT_SECONDARY);
+    font-weight: 500;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.formGroup label {
+    font-weight: 500;
+    color: var(--TEXT_PRIMARY);
+}
+
+.formGroup textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--BORDER_COLOR);
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    background-color: var(--BG_PRIMARY);
+    color: var(--TEXT_PRIMARY);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}

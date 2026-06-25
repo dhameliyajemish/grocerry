@@ -43,7 +43,14 @@ console.log("==========================================");
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production'
         ? [/\.onrender\.com$/, /\.vercel\.app$/] // Allow Render/Vercel subdomains
-        : ['http://localhost:3000', 'http://localhost:5000'],
+        : function(origin, callback) {
+            // Allow localhost, local IPs, or no origin (like Postman) in dev
+            if (!origin || /localhost/.test(origin) || /127\.0\.0\.1/.test(origin) || /192\.168\./.test(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
     credentials: true,
     optionsSuccessStatus: 200
 };

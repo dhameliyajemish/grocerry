@@ -402,3 +402,20 @@ export const uploadProductsFromPDF = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 }
+
+export const getProductById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        // Search by both product_id and id to support legacy database documents
+        const product = await Products.findOne({ $or: [{ product_id: id }, { id: id }] });
+        
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        
+        res.status(200).json(product);
+    } catch (error) {
+        console.error("Get Product By ID Error:", error);
+        res.status(500).json({ message: error.message });
+    }
+}

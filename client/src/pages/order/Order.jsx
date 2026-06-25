@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { fetchOrderHistory } from "../../actions/orders";
 import styles from './order.module.css';
@@ -13,7 +13,7 @@ const Order = () => {
     const [loading, setLoading] = useState(true);
     const [selectedOrderForReview, setSelectedOrderForReview] = useState(null);
 
-    const loadOrders = () => {
+    const loadOrders = useCallback(() => {
         setLoading(true);
         dispatch(fetchOrderHistory((data) => {
             setOrders(data);
@@ -22,11 +22,11 @@ const Order = () => {
             console.log(err);
             setLoading(false);
         }));
-    };
+    }, [dispatch]);
 
     useEffect(() => {
         loadOrders();
-    }, [dispatch]);
+    }, [loadOrders]);
 
     const handleCancelOrder = async (orderId) => {
         if (!window.confirm("Are you sure you want to cancel this order?")) return;

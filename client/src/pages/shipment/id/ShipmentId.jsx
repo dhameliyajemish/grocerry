@@ -77,9 +77,7 @@ const ShipmentId = () => {
         }
     };
 
-    const capitalizeFirst = (m) => {
-        return m.charAt(0).toUpperCase() + m.slice(1).toLowerCase();
-    }
+
 
     const getProgress = () => {
         switch (shipment?.status) {

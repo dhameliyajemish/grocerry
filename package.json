@@ -12,6 +12,11 @@
     ],
     "scripts": {
         "build": "npm install && npm run build -w grocerapp",
-        "start": "npm run start -w grocerapp-server"
+        "server": "npm run start -w grocerapp-server",
+        "client": "npm run dev -w grocerapp",
+        "start": "concurrently \"npm run server\" \"npm run client\""
+    },
+    "devDependencies": {
+        "concurrently": "^10.0.3"
     }
 }

@@ -39,10 +39,13 @@ const ShipmentId = lazy(() => import("./pages/shipment/id/ShipmentId"));
 const OrderId = lazy(() => import("./pages/order/id/OrderId"));
 const Invoice = lazy(() => import("./components/invoice/Invoice"));
 const Contact = lazy(() => import("./pages/contact/Contact"));
+const Rating = lazy(() => import("./pages/rating/Rating"));
+const ProductDetails = lazy(() => import("./pages/product-details/ProductDetails"));
 
 const App = () => {
     const dispatch = useDispatch();
-    const cart = useSelector(state => state.cart.cart) || [];
+    const cartState = useSelector(state => state.cart.cart);
+    const cart = useMemo(() => cartState || [], [cartState]);
     const [user] = useState(JSON.parse(localStorage.getItem('profile')));
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
@@ -174,6 +177,7 @@ const App = () => {
                 <Routes>
                     <Route path={'/'} element={<Home />} />
                     <Route path={'/products'} element={<Products addProductToCart={addProductToCart} />} />
+                    <Route path={'/product/:id'} element={<ProductDetails addProductToCart={addProductToCart} cart={cart} />} />
                     <Route path={'/cart'}
                         element={<CartPage cart={cart} cartCount={cartCount} updateQuantity={updateQuantity} />} />
                     <Route path={'/checkout'} element={<PrivateRoute component={<Checkout />} />} />
@@ -188,6 +192,7 @@ const App = () => {
                     <Route path={'/orders'} element={<Order />} />
                     <Route path={'/orders/:id'} element={<OrderId />} />
                     <Route path={'/orders/:id/invoice'} element={<Invoice />} />
+                    <Route path={'/rating/:orderId/:productId'} element={<PrivateRoute component={<Rating />} />} />
                     <Route path={'/wishlist'} element={<PrivateRoute component={<Wishlist addProductToCart={addProductToCart} />} />} />
                     <Route path={'/admin'} element={<PrivateRoute role={'ADMIN'} component={<Admin />} />} />
                     <Route path={'/admin/orders'}

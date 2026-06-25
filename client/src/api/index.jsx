@@ -9,7 +9,7 @@ import {
     ADMIN_BASEURL,
 } from "./BaseURLs";
 
-const API = axios.create({ baseURL: "http://localhost:5000" });
+const API = axios.create();
 
 API.interceptors.request.use(
     (req) => {
@@ -51,8 +51,10 @@ API.interceptors.request.use(
         // Only clear session for authentication errors (not admin-specific access errors)
         const isAuthError = error.response?.status === 401;
         const isAdminRoute = error.config?.url?.includes('/admin');
+        const publicRoutes = ["/login", "/signup", "/verify-otp", "/forgot-password", "/reset-password"];
+        const isPublicRoute = publicRoutes.some(route => error.config?.url?.includes(route));
 
-        if (isAuthError && !isAdminRoute) {
+        if (isAuthError && !isAdminRoute && !isPublicRoute) {
             console.warn("Authentication failed (non-admin). Clearing session...");
             localStorage.clear();
             window.location.href = "/login?error=session_expired";
@@ -65,6 +67,9 @@ API.interceptors.request.use(
 );
 
 /* ========================= PRODUCTS ========================= */
+export const getProductById = (id) =>
+    API.get(`${PRODUCTS_BASEURL}/${id}`);
+
 export const getProductsPerPage = (page, category) =>
     API.get(
         `${PRODUCTS_BASEURL}?page=${page}${category ? `&category=${category}` : ""
@@ -202,12 +207,14 @@ export const deleteProduct = (productId) =>
 
 /* ========================= REVIEWS ========================= */
 export const submitReview = (data) =>
-    axios.post("http://localhost:5000/api/reviews", data);
+    API.post("/api/reviews", data);
+
+export const checkReviewEligibility = (productId) =>
+    API.get(`/api/reviews/check/${productId}`);
 
 export const fetchOrderReviews = (orderId) =>
-    axios.get("http://localhost:5000/api/reviews/order/" + orderId);
+    API.get(`/api/reviews/order/${orderId}`);
 
 export const fetchProductReviews = (productId) =>
     API.get(`/api/reviews/product/${productId}`);
 
-export default API;

@@ -1,0 +1,272 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    background-color: var(--background-color, #fff);
+    color: var(--text-color, #333);
+}
+
+.backBtn {
+    background: none;
+    border: none;
+    color: #4CAF50;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    padding: 0;
+}
+
+.backBtn:hover {
+    text-decoration: underline;
+}
+
+.productGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+    .productGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.imageSection {
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainImage {
+    max-width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.detailsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    margin: 0;
+    color: var(--text-color, #111);
+}
+
+.brandCategory {
+    display: flex;
+    gap: 1.5rem;
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ratingSummary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reviewCount {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4CAF50;
+    margin: 1rem 0;
+}
+
+.stockStatus {
+    font-weight: 600;
+}
+
+.inStock {
+    color: #4CAF50;
+    background: #e8f5e9;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+}
+
+.outOfStock {
+    color: #f44336;
+    background: #ffebee;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+}
+
+.description {
+    margin-top: 1rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+.description h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    color: var(--text-color, #333);
+}
+
+.addToCartBtn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 1.5rem;
+}
+
+.addToCartBtn:hover:not(.disabled) {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.addToCartBtn.disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Reviews Section */
+.reviewsSection {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.reviewsSection h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.reviewForm {
+    background: #f9f9f9;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+}
+
+.reviewForm h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.formGroup textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.submitBtn {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.submitBtn:disabled {
+    background: #90CAF9;
+    cursor: not-allowed;
+}
+
+.loginPrompt {
+    background: #e3f2fd;
+    padding: 1.5rem;
+    border-radius: 8px;
+    color: #1565c0;
+    margin-bottom: 3rem;
+}
+
+.linkBtn {
+    background: none;
+    border: none;
+    color: #1976d2;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+}
+
+.reviewsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.reviewCard {
+    padding: 1.5rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.reviewHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.reviewerName {
+    font-weight: bold;
+    color: #333;
+}
+
+.reviewDate {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.reviewRating {
+    margin-bottom: 1rem;
+}
+
+.reviewComment {
+    line-height: 1.5;
+    color: #444;
+    margin: 0;
+}
+
+.noReviews {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.errorContainer {
+    text-align: center;
+    padding: 5rem 1rem;
+}

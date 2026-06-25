@@ -3,10 +3,11 @@ import Loading from "../../components/loading/Loading";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrder } from "../../actions/orders";
+import * as cartActions from "../../actions/cart";
 import { jsPDF } from "jspdf";
 import styles from './checkout.module.css';
 
-const Success = ({ setCart }) => {
+const Success = () => {
 
     const [searchParams] = useSearchParams();
     const order_id = searchParams.get('order');
@@ -15,11 +16,10 @@ const Success = ({ setCart }) => {
     const order = useSelector(state => state.orders.fetched);
     const [loading, setLoading] = useState(true);
 
-
     useEffect(() => {
         const onSuccess = () => {
             setLoading(false);
-            setCart([]);
+            dispatch(cartActions.setCart([]));
             localStorage.removeItem('cart');
         }
 
@@ -30,7 +30,7 @@ const Success = ({ setCart }) => {
         if (order_id) {
             dispatch(fetchOrder(order_id, onSuccess, onError));
         }
-    }, [dispatch, order_id, setCart])
+    }, [dispatch, order_id])
 
     const handleDownloadReceipt = () => {
         if (!order) return;

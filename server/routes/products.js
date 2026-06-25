@@ -10,7 +10,8 @@ import {
   ProductsRecommendations,
   getProductsArr,
   updateQuantity,
-  uploadProductsFromPDF
+  uploadProductsFromPDF,
+  getProductById
 } from "../controller/products/Products.js";
 import auth from "../middleware/auth.js";
 import adminAuth from "../middleware/adminAuth.js";
@@ -37,6 +38,7 @@ router.post("/", adminAuth, PostProducts);
 router.patch("/", adminAuth, adminUpdateProducts);
 router.patch("/updateQuantity", adminAuth, updateQuantity);
 router.get("/search", productsSearch);
+router.get("/:id", getProductById);
 router.post("/cart", validateCart);
 router.post("/arr", getProductsArr);
 router.post("/pdf-upload", adminAuth, upload.single('pdf'), uploadProductsFromPDF);

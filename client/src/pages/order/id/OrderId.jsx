@@ -6,7 +6,7 @@ import { jsPDF } from "jspdf";
 import Loading from "../../../components/loading/Loading";
 import Order from '../../../shared/assets/tracking/order.png';
 import { fetchOrder } from "../../../actions/orders";
-import { downloadInvoice, sendInvoiceEmail } from "../../../api/index";
+import { sendInvoiceEmail } from "../../../api/index";
 
 const OrderId = () => {
 
@@ -35,28 +35,33 @@ const OrderId = () => {
     }, [dispatch, id, navigate, order]);
 
     const capitalizeFirst = (m) => {
-        return m.charAt(0).toUpperCase() + m.slice(1).toLowerCase();
+        if (!m) return '';
+        return m.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
     }
 
     const getProgress = () => {
         switch (order?.status) {
-            case 'PROCESSING':
-                return 50;
+            case 'CONFIRMED':
+                return 20;
+            case 'PACKED':
+                return 40;
+            case 'SHIPPED':
+                return 60;
+            case 'OUT_FOR_DELIVERY':
+                return 80;
+            case 'DELIVERED':
             case 'FULFILLED':
                 return 100;
+            case 'PROCESSING':
+                return 50;
+            case 'CANCELLED':
+                return 0;
             default:
-                return 5
+                return 5;
         }
     }
 
-    const getAuthHeader = () => {
-        const profile = localStorage.getItem('profile');
-        if (profile) {
-            const token = JSON.parse(profile)?.token;
-            return token ? `Bearer ${token}` : '';
-        }
-        return '';
-    };
+
 
     const handleDownloadPDF = async () => {
         try {
@@ -359,6 +364,17 @@ const OrderId = () => {
                             <div className={styles['product-total']}>
                                 ₹{(product.price * (product.quantity || 1)).toFixed(2)}
                             </div>
+                            {order.status === 'FULFILLED' && (
+                                <div style={{marginLeft: 'auto'}}>
+                                    <button 
+                                        className="btn2" 
+                                        style={{padding: '0.4em 0.8em', fontSize: '0.8em'}}
+                                        onClick={() => navigate(`/rating/${order.order_id}/${product.product_id || product.id || product._id}`, { state: { product } })}
+                                    >
+                                        Rate Product
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

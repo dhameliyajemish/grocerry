@@ -1,8 +1,11 @@
 import express from 'express';
 import auth from '../middleware/auth.js';
-import { createReview, getReviewsByOrder, getProductReviews } from '../controllers/reviewController.js';
+import { createReview, getReviewsByOrder, getProductReviews, checkReviewEligibility } from '../controllers/reviewController.js';
 
 const router = express.Router();
+
+// Check if user is eligible to review a product (requires auth)
+router.get('/check/:productId', auth, checkReviewEligibility);
 
 // Get reviews for a specific order (requires auth to verify ownership)
 router.get('/order/:orderId', auth, getReviewsByOrder);

@@ -5,24 +5,7 @@ export const setCart = (data) => ({
     data
 });
 
-export const addToCartAction = (data) => ({
-    type: 'ADD_TO_CART',
-    data
-});
 
-export const removeFromCartAction = (product_id) => ({
-    type: 'REMOVE_FROM_CART',
-    data: product_id
-});
-
-export const updateCartQuantityAction = (product_id, quantity) => ({
-    type: 'UPDATE_CART_QUANTITY',
-    data: { product_id, quantity }
-});
-
-export const clearCartAction = () => ({
-    type: 'CLEAR_CART'
-});
 
 export const getCartAsync = () => {
     return async (dispatch) => {
