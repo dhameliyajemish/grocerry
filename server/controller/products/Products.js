@@ -7,13 +7,16 @@ import { parsePDFProductData } from '../../utils/pdfProductParser.js';
 
 export const productsSearch = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = 12;
+        const skip = (page - 1) * limit;
 
-        const products = await Products.find({ "name": { $regex: req.query.search, $options: "i" } });
+        const query = { "name": { $regex: req.query.search, $options: "i" } };
+        const total = await Products.countDocuments(query);
+        const products = await Products.find(query).skip(skip).limit(limit);
 
-        const productsPaged = Pagination(req.query.page, products);
-
-        const numberOfPages = Math.ceil(products.length / 2);
-        res.status(200).json({ total_pages: numberOfPages, products: productsPaged });
+        const numberOfPages = Math.ceil(total / limit);
+        res.status(200).json({ total_pages: numberOfPages, products });
 
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -44,27 +47,21 @@ export const updateQuantity = async (req, res) => {
 
 export const ShowProductsPerPage = async (req, res) => {
     try {
-        console.log("=== ATLAS DEBUG LOGS ===");
-        if (mongoose.connection.readyState === 1 && mongoose.connection.db) {
-            console.log("DB:", mongoose.connection.db.databaseName);
-            console.log("Collections:", await mongoose.connection.db.listCollections().toArray());
-        } else {
-            console.log("DB: Not connected yet.");
+        const page = parseInt(req.query.page) || 1;
+        const limit = 12;
+        const skip = (page - 1) * limit;
+        
+        let query = {};
+        if (req.query.category && req.query.category !== 'All') {
+            const decodedCategory = decodeURIComponent(req.query.category);
+            query.category = { $regex: `^${decodedCategory}$`, $options: "i" };
         }
-        
-        console.log("Model Collection:", Products.collection.name);
-        console.log("Total Count:", await Products.countDocuments());
-        console.log("FindOne:", await Products.findOne());
-        
-        // TEMPORARILY REMOVED PAGINATION AND CATEGORY FILTER
-        // Fetching all products directly to test if MongoDB Atlas returns anything
-        const products = await Products.find({});
-        console.log("Find All Length:", products.length);
-        console.log("Find All Data:", products);
-        console.log("========================");
 
-        // Return everything directly without pagination
-        res.status(200).json({ total_pages: 1, products: products });
+        const total = await Products.countDocuments(query);
+        const products = await Products.find(query).skip(skip).limit(limit);
+
+        const total_pages = Math.ceil(total / limit);
+        res.status(200).json({ total_pages, products });
 
     } catch (error) {
         console.error(`[ShowProductsPerPage] Error:`, error.message);

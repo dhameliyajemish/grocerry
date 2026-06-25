@@ -99,6 +99,7 @@ const ProductCard = ({ product, productsPage = false }) => {
                 <img 
                     src={product.image} 
                     alt={product.name} 
+                    loading="lazy"
                     onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400?text=No+Image'; }} 
                     onClick={() => navigate(`/product/${pId}`)}
                     style={{ cursor: 'pointer' }}

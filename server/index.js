@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import multer from 'multer';
+import compression from 'compression';
 import products from "./routes/products.js";
 import shipping from "./routes/shipping.js"
 import orders from './routes/orders.js';
@@ -56,6 +57,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(compression());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
