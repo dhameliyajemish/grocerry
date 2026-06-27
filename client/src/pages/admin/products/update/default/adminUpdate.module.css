@@ -1,124 +1,168 @@
 .wrapper {
-    padding: 4em 2em;
     display: flex;
     flex-direction: column;
-    gap: 4em;
-    min-height: 80vh;
+    gap: 1.5rem;
+    padding: 0;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--TEXT_PRIMARY);
+    margin: 0;
 }
 
 .header {
     display: flex;
     flex-direction: column;
-    gap: 2em;
-}
-
-.action {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
+    gap: 0.5rem;
 }
 
 .note {
-    font-weight: 500;
+    font-weight: 600;
+    color: var(--DANGER);
+}
+
+.action {
+    background: var(--SURFACE);
+    border: 1px solid var(--BORDER_COLOR);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--SHADOW_SM);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
 .update {
-    align-self: center;
-}
-
-.format {
-    align-self: center;
-    font-size: .8rem;
-    text-align: center;
-    transition: all .2s ease-in-out;
-}
-
-.format:hover {
-    color: var(--PRIMARY);
+    align-self: flex-start;
+    min-width: 150px;
 }
 
 .format-links {
     display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-    align-self: center;
-}
-
-.file-type {
-    align-self: center;
-    display: grid;
-    grid-template-columns: .25fr 1fr 1fr;
-    align-items: stretch;
-    gap: 1em;
-}
-
-.file-type > * {
-    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
     align-items: center;
-    justify-content: center;
 }
 
-.file-type-title {
-    font-weight: 500;
-    font-size: 0.8rem;
+.format {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--PRIMARY);
+    cursor: pointer;
+    background: none;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.format:hover {
+    color: var(--PRIMARY_DARK);
+    text-decoration: underline;
+}
+
+/* File Upload Style */
+.action input[type="file"] {
+    border: 2px dashed var(--BORDER_COLOR);
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    background: var(--BG_SECONDARY);
+    width: 100%;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.action input[type="file"]:hover {
+    border-color: var(--PRIMARY);
+    background-color: var(--PRIMARY_ALPHA_10);
+}
+
+/* File Type Selector */
+.file-type {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.file-type-title, .mode-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--TEXT_PRIMARY);
+}
+
+.file-type-btn-wrapper {
+    display: flex;
+    gap: 1rem;
 }
 
 .file-type-btn {
-    font-size: .8rem;
-    line-height: 1rem;
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 600;
     text-align: center;
-    border-radius: 5px;
-    padding: .5em 1em;
-    border: 1px solid var(--NEUTRAL_2);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--BORDER_COLOR);
+    background-color: var(--BG_SECONDARY);
+    color: var(--TEXT_SECONDARY);
     cursor: pointer;
-    transition: .2s all ease-in-out;
+    transition: all 0.2s ease;
 }
 
 .file-type-btn:hover {
-    background: var(--NEUTRAL_1);
+    background-color: var(--SURFACE_HOVER);
+    color: var(--TEXT_PRIMARY);
 }
 
+.file-type-btn.active {
+    border-color: var(--PRIMARY);
+    background-color: var(--PRIMARY_ALPHA_10);
+    color: var(--PRIMARY);
+}
+
+/* Mode Selector */
 .mode {
-    align-self: center;
-    display: grid;
-    grid-template-columns: .25fr 1fr 1fr;
-    align-items: stretch;
-    gap: 1em;
-}
-
-.mode > * {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
 }
 
-.mode-title {
-    font-weight: 500;
-    font-size: 0.8rem;
+.mode-btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 .mode-btn {
-    font-size: .8rem;
-    line-height: 1rem;
-    text-align: center;
-    border-radius: 5px;
-    padding: .5em 1em;
-    border: 1px solid var(--NEUTRAL_2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: left;
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid var(--BORDER_COLOR);
+    background-color: var(--BG_SECONDARY);
+    color: var(--TEXT_SECONDARY);
     cursor: pointer;
-    transition: .2s all ease-in-out;
+    transition: all 0.2s ease;
 }
 
 .mode-btn:hover {
-    background: var(--NEUTRAL_1);
+    background-color: var(--SURFACE_HOVER);
+    color: var(--TEXT_PRIMARY);
 }
 
-.active {
-    border: 2px solid var(--PRIMARY);
+.mode-btn.active {
+    border-color: var(--PRIMARY);
+    background-color: var(--PRIMARY_ALPHA_10);
+    color: var(--PRIMARY);
 }
 
 @media screen and (min-width: 800px) {
     .wrapper {
         max-width: 800px;
-        margin: auto;
+        margin: 0 auto;
     }
 }

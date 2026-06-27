@@ -18,7 +18,7 @@ router.post('/cod', auth, (req, res, next) => {
 }, createOrderCOD);
 router.get('/history', auth, getOrderHistory);
 router.patch('/:id/cancel', auth, cancelOrderUser);
-router.post('/:id/send-invoice', auth, sendInvoiceEmail);
+router.post('/:id/send-invoice', sendInvoiceEmail);
 router.get('/:id/invoice', auth, downloadInvoice);
 router.get('/:id', getOrder);
 router.get('/', adminAuth, getAllOrders);

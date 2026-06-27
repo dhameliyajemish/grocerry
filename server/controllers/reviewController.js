@@ -13,11 +13,30 @@ export const checkReviewEligibility = async (req, res) => {
         const user_id = req.user?.id;
         if (!user_id) return res.status(401).json({ message: "Unauthorized" });
 
+        const product = await Product.findOne({
+            $or: [
+                { id: String(productId) },
+                { product_id: String(productId) },
+                ...(mongoose.Types.ObjectId.isValid(productId) ? [{ _id: productId }] : [])
+            ]
+        });
+
+        const idsToCheck = [productId];
+        if (product) {
+            if (product.id) idsToCheck.push(String(product.id));
+            if (product.product_id) idsToCheck.push(String(product.product_id));
+            if (product._id) idsToCheck.push(String(product._id));
+        }
+        const uniqueIds = [...new Set(idsToCheck.filter(Boolean))];
+
         const deliveredOrders = await Order.find({ user_id, status: 'DELIVERED' });
         let isEligible = false;
 
         for (let o of deliveredOrders) {
-            if (o.products.some(p => (p.product_id || p.id) === productId)) {
+            if (o.products.some(p => {
+                const pIdStr = String(p.product_id || p.id || p._id || '');
+                return uniqueIds.includes(pIdStr);
+            })) {
                 isEligible = true;
                 break;
             }
@@ -45,11 +64,30 @@ export const createReview = async (req, res) => {
 
         if (!user_id) return res.status(401).json({ message: "Unauthorized" });
 
+        const product = await Product.findOne({
+            $or: [
+                { id: String(product_id) },
+                { product_id: String(product_id) },
+                ...(mongoose.Types.ObjectId.isValid(product_id) ? [{ _id: product_id }] : [])
+            ]
+        });
+
+        const idsToCheck = [product_id];
+        if (product) {
+            if (product.id) idsToCheck.push(String(product.id));
+            if (product.product_id) idsToCheck.push(String(product.product_id));
+            if (product._id) idsToCheck.push(String(product._id));
+        }
+        const uniqueIds = [...new Set(idsToCheck.filter(Boolean))];
+
         // If order_id is missing (e.g. from Product Details page), find a delivered order
         if (!order_id) {
             const deliveredOrders = await Order.find({ user_id, status: 'DELIVERED' });
             for (let o of deliveredOrders) {
-                if (o.products.some(p => (p.product_id || p.id) === product_id)) {
+                if (o.products.some(p => {
+                    const pIdStr = String(p.product_id || p.id || p._id || '');
+                    return uniqueIds.includes(pIdStr);
+                })) {
                     order_id = o.order_id;
                     break;
                 }
@@ -65,11 +103,17 @@ export const createReview = async (req, res) => {
         if (order.status !== 'DELIVERED') return res.status(400).json({ message: "Can only review delivered orders." });
 
         // 2. Verify Product is in the order
-        const productInOrder = order.products.find(p => (p.product_id || p.id) === product_id);
+        const productInOrder = order.products.find(p => {
+            const pIdStr = String(p.product_id || p.id || p._id || '');
+            return uniqueIds.includes(pIdStr);
+        });
         if (!productInOrder) return res.status(400).json({ message: "Product not found in this order." });
 
         // 3. Ensure no duplicate review
-        const existingReview = await Review.findOne({ order_id, product_id });
+        const existingReview = await Review.findOne({ 
+            order_id, 
+            product_id: { $in: uniqueIds } 
+        });
         if (existingReview) return res.status(400).json({ message: "You have already reviewed this product." });
 
         // 4. Create and save review
@@ -83,7 +127,7 @@ export const createReview = async (req, res) => {
         await review.save();
 
         // 5. Update Product rating and numReviews
-        const productReviews = await Review.find({ product_id });
+        const productReviews = await Review.find({ product_id: { $in: uniqueIds } });
         const numReviews = productReviews.length;
         
         // Safely calculate new rating, handling potential non-numeric values in old data
@@ -131,7 +175,24 @@ export const getReviewsByOrder = async (req, res) => {
 export const getProductReviews = async (req, res) => {
     try {
         const { productId } = req.params;
-        const reviews = await Review.find({ product_id: productId }).lean().sort({ createdAt: -1 });
+
+        const product = await Product.findOne({
+            $or: [
+                { id: String(productId) },
+                { product_id: String(productId) },
+                ...(mongoose.Types.ObjectId.isValid(productId) ? [{ _id: productId }] : [])
+            ]
+        });
+
+        const idsToCheck = [productId];
+        if (product) {
+            if (product.id) idsToCheck.push(String(product.id));
+            if (product.product_id) idsToCheck.push(String(product.product_id));
+            if (product._id) idsToCheck.push(String(product._id));
+        }
+        const uniqueIds = [...new Set(idsToCheck.filter(Boolean))];
+
+        const reviews = await Review.find({ product_id: { $in: uniqueIds } }).lean().sort({ createdAt: -1 });
         
         // Fetch user details for each review since user_id is a string
         const populatedReviews = await Promise.all(reviews.map(async (review) => {

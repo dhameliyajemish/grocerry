@@ -96,9 +96,7 @@ const AdminUpdateOrder = () => {
             {loading && <Loading
                 text={state === INPUT ? 'Fetching Database' : (state === ORDER_VIEW ? 'Updating Database' : 'Loading')}
                 overlay={true}/>}
-            <div className={'heading'}>
-                <h1>Update Order Status</h1>
-            </div>
+            <h1 className={styles['page-title']}>Update Order Status</h1>
             {(state === INPUT || state === ORDER_VIEW) &&
                 <div className={'warning-box'}><span className={'warning'}>Warning:</span> The order status cannot be
                     rolled back to a previous

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, useState, useMemo, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -23,8 +23,10 @@ const Wishlist = lazy(() => import("./pages/wishlist/Wishlist"));
 const Error401 = lazy(() => import("./pages/errors/401/Error401"));
 const Error404 = lazy(() => import("./pages/errors/404/Error404"));
 const Admin = lazy(() => import("./pages/admin/default/Admin"));
+const AdminLayout = lazy(() => import("./components/admin-layout/AdminLayout"));
 const AdminUpdate = lazy(() => import("./pages/admin/products/update/default/AdminUpdate"));
 const AdminUpdateSuccess = lazy(() => import("./pages/admin/products/update/success/AdminUpdateSuccess"));
+const AdminReviews = lazy(() => import("./pages/admin/reviews/AdminReviews"));
 const AdminUpdateOrder = lazy(() => import("./pages/admin/orders/update/AdminUpdateOrder"));
 const AdminNewOrder = lazy(() => import("./pages/admin/orders/new/AdminNewOrder"));
 const AdminOrders = lazy(() => import("./pages/admin/orders/default/AdminOrders"));
@@ -41,6 +43,19 @@ const Invoice = lazy(() => import("./components/invoice/Invoice"));
 const Contact = lazy(() => import("./pages/contact/Contact"));
 const Rating = lazy(() => import("./pages/rating/Rating"));
 const ProductDetails = lazy(() => import("./pages/product-details/ProductDetails"));
+
+const MainLayout = ({ children, cartCount, theme, toggleTheme }) => {
+    const location = useLocation();
+    const isAdmin = location.pathname.startsWith('/admin');
+    
+    return (
+        <>
+            {!isAdmin && <Navigation cartCount={cartCount} theme={theme} toggleTheme={toggleTheme} />}
+            {children}
+            {!isAdmin && <Footer />}
+        </>
+    );
+};
 
 const App = () => {
     const dispatch = useDispatch();
@@ -170,54 +185,48 @@ const App = () => {
     }, [cart]);
 
     return (
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <ScrollToTop />
-            <Navigation cartCount={cartCount} theme={theme} toggleTheme={toggleTheme} />
-            <Suspense fallback={<Loading />}>
-                <Routes>
-                    <Route path={'/'} element={<Home />} />
-                    <Route path={'/products'} element={<Products addProductToCart={addProductToCart} />} />
-                    <Route path={'/product/:id'} element={<ProductDetails addProductToCart={addProductToCart} cart={cart} />} />
-                    <Route path={'/cart'}
-                        element={<CartPage cart={cart} cartCount={cartCount} updateQuantity={updateQuantity} />} />
-                    <Route path={'/checkout'} element={<PrivateRoute component={<Checkout />} />} />
-                    <Route path={'/checkout/success'} element={<Success />} />
-                    <Route path={'/signup'} element={<Signup />} />
-                    <Route path={'/contact'} element={<Contact />} />
-                    <Route path={'/shipping'} element={<Shipment />} />
-                    <Route path={'/shipping/:id'} element={<ShipmentId />} />
-                    <Route path={'/login'} element={<Login />} />
-                    <Route path={'/forgot-password'} element={<ForgotPassword />} />
-                    <Route path={'/reset-password'} element={<ResetPassword />} />
-                    <Route path={'/orders'} element={<Order />} />
-                    <Route path={'/orders/:id'} element={<OrderId />} />
-                    <Route path={'/orders/:id/invoice'} element={<Invoice />} />
-                    <Route path={'/rating/:orderId/:productId'} element={<PrivateRoute component={<Rating />} />} />
-                    <Route path={'/wishlist'} element={<PrivateRoute component={<Wishlist addProductToCart={addProductToCart} />} />} />
-                    <Route path={'/admin'} element={<PrivateRoute role={'ADMIN'} component={<Admin />} />} />
-                    <Route path={'/admin/orders'}
-                        element={<PrivateRoute role={'ADMIN'} component={<AdminOrders />} />} />
-                    <Route path={'/admin/orders/update'}
-                        element={<PrivateRoute role={'ADMIN'} component={<AdminUpdateOrder />} />} />
-                    <Route path={'/admin/orders/new'}
-                        element={<PrivateRoute role={'ADMIN'} component={<AdminNewOrder />} />} />
-                    <Route path={'/admin/shipping'}
-                        element={<PrivateRoute role={'ADMIN'} component={<AdminShipping />} />} />
-                    <Route path={'/admin/shipping/update'}
-                        element={<PrivateRoute role={'ADMIN'} component={<AdminUpdateShipping />} />} />
-                    <Route path={'/admin/products/new'}
-                        element={<PrivateRoute role={'ADMIN'} component={<AdminNewProduct />} />} />
-                    <Route path={'/admin/products/update'}
-                        element={<PrivateRoute role={'ADMIN'} component={<AdminUpdate />} />} />
-                    <Route path={'/admin/products/update/success'}
-                        element={<PrivateRoute role={'ADMIN'} component={<AdminUpdateSuccess />} />} />
-                    <Route path={'/admin/orders/:id'}
-                        element={<PrivateRoute role={'ADMIN'} component={<AdminViewOrder />} />} />
-                    <Route path={'/401'} element={<Error401 />} />
-                    <Route path={'/*'} element={<Error404 />} />
-                </Routes>
-            </Suspense>
-            <Footer />
+            <MainLayout cartCount={cartCount} theme={theme} toggleTheme={toggleTheme}>
+                <Suspense fallback={<Loading />}>
+                    <Routes>
+                        <Route path={'/'} element={<Home />} />
+                        <Route path={'/products'} element={<Products addProductToCart={addProductToCart} />} />
+                        <Route path={'/product/:id'} element={<ProductDetails addProductToCart={addProductToCart} cart={cart} />} />
+                        <Route path={'/cart'}
+                            element={<CartPage cart={cart} cartCount={cartCount} updateQuantity={updateQuantity} />} />
+                        <Route path={'/checkout'} element={<PrivateRoute component={<Checkout />} />} />
+                        <Route path={'/checkout/success'} element={<Success />} />
+                        <Route path={'/signup'} element={<Signup />} />
+                        <Route path={'/contact'} element={<Contact />} />
+                        <Route path={'/shipping'} element={<Shipment />} />
+                        <Route path={'/shipping/:id'} element={<ShipmentId />} />
+                        <Route path={'/login'} element={<Login />} />
+                        <Route path={'/forgot-password'} element={<ForgotPassword />} />
+                        <Route path={'/reset-password'} element={<ResetPassword />} />
+                        <Route path={'/orders'} element={<Order />} />
+                        <Route path={'/orders/:id'} element={<OrderId />} />
+                        <Route path={'/orders/:id/invoice'} element={<Invoice />} />
+                        <Route path={'/rating/:orderId/:productId'} element={<PrivateRoute component={<Rating />} />} />
+                        <Route path={'/wishlist'} element={<PrivateRoute component={<Wishlist addProductToCart={addProductToCart} />} />} />
+                        <Route path={'/admin'} element={<PrivateRoute role={'ADMIN'} component={<AdminLayout />} />}>
+                            <Route index element={<Admin />} />
+                            <Route path={'orders'} element={<AdminOrders />} />
+                            <Route path={'orders/update'} element={<AdminUpdateOrder />} />
+                            <Route path={'orders/new'} element={<AdminNewOrder />} />
+                            <Route path={'shipping'} element={<AdminShipping />} />
+                            <Route path={'shipping/update'} element={<AdminUpdateShipping />} />
+                            <Route path={'products/new'} element={<AdminNewProduct />} />
+                            <Route path={'products/update'} element={<AdminUpdate />} />
+                            <Route path={'products/update/success'} element={<AdminUpdateSuccess />} />
+                            <Route path={'orders/:id'} element={<AdminViewOrder />} />
+                            <Route path={'reviews'} element={<AdminReviews />} />
+                        </Route>
+                        <Route path={'/401'} element={<Error401 />} />
+                        <Route path={'/*'} element={<Error404 />} />
+                    </Routes>
+                </Suspense>
+            </MainLayout>
         </BrowserRouter>
     );
 }

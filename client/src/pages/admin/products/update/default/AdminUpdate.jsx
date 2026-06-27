@@ -107,27 +107,26 @@ const AdminUpdate = () => {
             {error && <Error error={error} setError={setError}/>}
             {warning && <Warning warning={warning} setWarning={setWarning}/>}
             <div className={styles['header']}>
-                <div className={'heading'}>
-                    <h1>Update Products</h1>
-                </div>
-                <p><span className={styles['note']}>Warning:</span> Once the database is updated it cannot be restored.
-                </p>
+                <h1 className={styles['page-title']}>Update Products</h1>
+                <p><span className={styles['note']}>Warning:</span> Once the database is updated it cannot be restored.</p>
             </div>
             <div className={styles['action']}>
                 {/* File Type Selection */}
                 <div className={styles['file-type']}>
                     <div className={styles['file-type-title']}>File Type</div>
-                    <div 
-                        onClick={() => { setFileType("csv"); setFile(null); setData(""); }}
-                        className={`${styles[`file-type-btn`]} ${fileType === "csv" && styles['active']}`}
-                    >
-                        CSV File
-                    </div>
-                    <div 
-                        onClick={() => { setFileType("pdf"); setFile(null); setData(""); }}
-                        className={`${styles[`file-type-btn`]} ${fileType === "pdf" && styles['active']}`}
-                    >
-                        PDF File
+                    <div className={styles['file-type-btn-wrapper']}>
+                        <div 
+                            onClick={() => { setFileType("csv"); setFile(null); setData(""); }}
+                            className={`${styles[`file-type-btn`]} ${fileType === "csv" ? styles['active'] : ''}`}
+                        >
+                            CSV File
+                        </div>
+                        <div 
+                            onClick={() => { setFileType("pdf"); setFile(null); setData(""); }}
+                            className={`${styles[`file-type-btn`]} ${fileType === "pdf" ? styles['active'] : ''}`}
+                        >
+                            PDF File
+                        </div>
                     </div>
                 </div>
 
@@ -141,13 +140,15 @@ const AdminUpdate = () => {
                 {/* Mode Selection */}
                 <div className={styles['mode']}>
                     <div className={styles['mode-title']}>Mode</div>
-                    <div onClick={() => setMode("UPDATE")}
-                         className={`${styles[`mode-btn`]} ${mode === "UPDATE" && styles['active']}`}>Update products by
-                        id
-                    </div>
-                    <div onClick={() => setMode("REGENERATE")}
-                         className={`${styles[`mode-btn`]} ${mode === "REGENERATE" && styles['active']}`}>Delete all
-                        entries and upload file
+                    <div className={styles['mode-btn-wrapper']}>
+                        <div onClick={() => setMode("UPDATE")}
+                             className={`${styles[`mode-btn`]} ${mode === "UPDATE" ? styles['active'] : ''}`}>
+                             Update products by ID
+                        </div>
+                        <div onClick={() => setMode("REGENERATE")}
+                             className={`${styles[`mode-btn`]} ${mode === "REGENERATE" ? styles['active'] : ''}`}>
+                             Delete all entries and upload file
+                        </div>
                     </div>
                 </div>
                 

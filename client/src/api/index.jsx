@@ -70,6 +70,9 @@ API.interceptors.request.use(
 export const getProductById = (id) =>
     API.get(`${PRODUCTS_BASEURL}/${id}`);
 
+export const fetchCategoryCounts = () =>
+    API.get(`${PRODUCTS_BASEURL}/categories/count`);
+
 export const getProductsPerPage = (page, category) =>
     API.get(
         `${PRODUCTS_BASEURL}?page=${page}${category ? `&category=${category}` : ""
@@ -217,4 +220,10 @@ export const fetchOrderReviews = (orderId) =>
 
 export const fetchProductReviews = (productId) =>
     API.get(`/api/reviews/product/${productId}`);
+
+export const adminGetAllReviews = () =>
+    API.get(`${ADMIN_BASEURL}/reviews`);
+
+export const adminDeleteReview = (reviewId) =>
+    API.delete(`${ADMIN_BASEURL}/reviews/${reviewId}`);
 

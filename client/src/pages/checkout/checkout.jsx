@@ -100,6 +100,16 @@ const Checkout = () => {
                     description: "Grocery Order Payment",
                     order_id: resData.order_id,
                     handler: function (response) {
+                        let enrichedProducts = [];
+                        try {
+                            const payloadBase64 = cart.token.split('.')[1];
+                            const normalizedPayload = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+                            const decodedString = JSON.parse(window.atob(normalizedPayload));
+                            enrichedProducts = decodedString.products || [];
+                        } catch (decodeErr) {
+                            console.error("Token decoding error:", decodeErr);
+                        }
+
                         const paymentData = {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
@@ -111,8 +121,9 @@ const Checkout = () => {
                                 email: data.email,
                                 phone_number: data.phone_number,
                                 address: data.address,
-                                products: cart.products,
-                                total: cart.total
+                                products: enrichedProducts,
+                                total: cart.total,
+                                payment_method: paymentMethod
                             }
                         };
                         dispatch(verifyRazorpayPayment(paymentData, (final_order_id) => {

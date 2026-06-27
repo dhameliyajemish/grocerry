@@ -36,9 +36,7 @@ const AdminShipping = () => {
 
     return (
         <div className={styles['wrapper']}>
-            <div className={'heading'}>
-                <h1>All Shipments</h1>
-            </div>
+            <h1 className={styles['page-title']}>All Shipments</h1>
             {loading ? <Loading/> : <ShippingList shipments={data.shipments}/>}
             {<Pages max={data.total_pages} current={page} onPageClick={onPageClick}/>}
         </div>

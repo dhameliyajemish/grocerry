@@ -1,64 +1,96 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 4em;
-    padding: 4em 2em;
-    min-height: 80vh;
+    gap: 1.5rem;
+    padding: 0;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--TEXT_PRIMARY);
+    margin: 0;
 }
 
 .wrapper2 {
+    background: var(--SURFACE);
+    border: 1px solid var(--BORDER_COLOR);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--SHADOW_SM);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 2em;
-}
-
-.id-wrapper > * {
-    width: 50%;
-    text-align: center;
+    gap: 1.5rem;
+    width: 100%;
 }
 
 .input {
-    font-size: 1.5rem;
-    padding: .25em;
     width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--BORDER_COLOR);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
     text-align: center;
+    background-color: var(--SURFACE);
+    color: var(--TEXT_PRIMARY);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.note {
-    font-weight: 500;
+.input:focus {
+    border-color: var(--PRIMARY);
+    box-shadow: 0 0 0 3px var(--PRIMARY_ALPHA_10);
 }
 
 .options-wrapper {
     display: flex;
     align-items: center;
-    gap: 2em;
+    justify-content: space-between;
+    gap: 1.5rem;
+    width: 100%;
+    border-top: 1px solid var(--BORDER_COLOR);
+    padding-top: 1.25rem;
 }
 
 .status {
-    font-size: .9rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--TEXT_SECONDARY);
+}
+
+.options-wrapper select {
+    flex: 1;
+    max-width: 250px;
 }
 
 .response-wrapper {
+    background: var(--SURFACE);
+    border: 1px solid var(--BORDER_COLOR);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    box-shadow: var(--SHADOW_SM);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2em;
+    gap: 1.5rem;
+    text-align: center;
 }
 
 .response-wrapper img {
-    width: 12em;
+    width: 80px;
+    height: 80px;
 }
 
 .response-wrapper p {
-    font-weight: 500;
-    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--TEXT_PRIMARY);
 }
 
 @media screen and (min-width: 800px) {
     .wrapper {
-        max-width: 800px;
-        margin: auto;
+        max-width: 600px;
+        margin: 0 auto;
     }
 }

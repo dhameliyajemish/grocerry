@@ -90,36 +90,47 @@ const AdminNewProduct = () => {
     return (
         <div className={styles['wrapper']}>
             {error && <Error error={error} setError={setError}/>}
-            <div className={'heading'}>
-                <h1>New Product</h1>
+            <h1 className={styles['page-title']}>New Product</h1>
+            
+            <div className={styles['form-card']}>
+                <div className={styles['form']}>
+                    <input maxLength={6} placeholder={'Product Id (e.g. ABC123)'} name={'product_id'} value={product.product_id}
+                           onChange={handleChange}/>
+                    <input placeholder={'Product Name'} name={'name'} value={product.name}
+                           onChange={handleChange}/>
+                    <input placeholder={'Brand'} name={'brand'} value={product.brand}
+                           onChange={handleChange}/>
+                    <input placeholder={'Price (₹)'} type={'number'} name={'price'} value={product.price}
+                           onChange={handleChange}/>
+                    <input placeholder={'Weight/Qty'} type={'number'} name={'weight'} value={product.weight}
+                           onChange={handleChange}/>
+                    <input placeholder={'Unit (kg/g/ml)'} maxLength={3} name={'measurement'} value={product.measurement}
+                           onChange={handleChange}/>
+                    <select defaultValue={''} className={styles['full']} name={'category'}
+                            onChange={handleChange}>
+                        <option value={''} disabled={true}>Select Category</option>
+                        {categories.map((category, i) => <option key={i} value={category}>{category}</option>)}
+                    </select>
+                    <input placeholder={'Initial Stock'} type={'number'} name={'stock'} value={product.stock}
+                           onChange={handleChange}/>
+                    <input placeholder={'Image URL'} type={'url'} name={'image'} value={product.image}
+                           className={styles['full']}
+                           onChange={handleChange}/>
+                </div>
+
+                {product.image && product.image.match(/(https?:\/\/)?.*(\.png|\.jpg|\.jpeg)/) && (
+                    <div className={styles['preview-container']}>
+                        <div className={styles['preview-title']}>Image Preview</div>
+                        <div className={styles['preview-box']}>
+                            <img src={product.image} alt="Preview" className={styles['preview-img']} onError={(e) => { e.target.style.display = 'none'; }} />
+                        </div>
+                    </div>
+                )}
+
+                <button onClick={handleSubmit} className={`btn1 ${styles['submit']}`} disabled={isLoading}>
+                    {isLoading ? 'Adding...' : 'Add Product'}
+                </button>
             </div>
-            <div className={styles['form']}>
-                <input maxLength={6} placeholder={'Product Id (e.g. ABC123)'} name={'product_id'} value={product.product_id}
-                       onChange={handleChange}/>
-                <input placeholder={'Product Name'} name={'name'} value={product.name}
-                       onChange={handleChange}/>
-                <input placeholder={'Brand'} name={'brand'} value={product.brand}
-                       onChange={handleChange}/>
-                <input placeholder={'Price (₹)'} type={'number'} name={'price'} value={product.price}
-                       onChange={handleChange}/>
-                <input placeholder={'Weight/Qty'} type={'number'} name={'weight'} value={product.weight}
-                       onChange={handleChange}/>
-                <input placeholder={'Unit (kg/g/ml)'} maxLength={3} name={'measurement'} value={product.measurement}
-                       onChange={handleChange}/>
-                <select defaultValue={''} className={styles['full']} name={'category'}
-                        onChange={handleChange}>
-                    <option value={''} disabled={true}>Select Category</option>
-                    {categories.map((category, i) => <option key={i} value={category}>{category}</option>)}
-                </select>
-                <input placeholder={'Initial Stock'} type={'number'} name={'stock'} value={product.stock}
-                       onChange={handleChange}/>
-                <input placeholder={'Image URL'} type={'url'} name={'image'} value={product.image}
-                       className={styles['full']}
-                       onChange={handleChange}/>
-            </div>
-            <button onClick={handleSubmit} className={`btn1 ${styles['submit']}`} disabled={isLoading}>
-                {isLoading ? 'Adding...' : 'Add Product'}
-            </button>
         </div>
     );
 }

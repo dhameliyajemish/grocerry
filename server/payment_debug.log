@@ -1,0 +1,319 @@
+[2026-06-25T08:15:06.243Z] createCheckoutSession started {
+  "body": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0cyI6W3sicHJvZHVjdF9pZCI6IlNOQUNLU18wMjAiLCJuYW1lIjoiVG9ydGlsbGEgQ2hpcHMiLCJwcmljZSI6MTMwLCJxdWFudGl0eSI6MSwiaW1hZ2UiOiIvaW1hZ2VzL2dyb2NlcnkvU25hY2tzL3RvcnRpbGxhX2NoaXBzX3BhY2tldF8wMjAuanBnIiwiYnJhbmQiOiJHZW5lcmljIiwicGFja2FnaW5nIjp7InF1YW50aXR5IjoiMSIsInVuaXQiOiJwYWNrZXQifX1dLCJ0b3RhbCI6IjEzMC4wMCIsImlhdCI6MTc4MjM3NTI4OCwiZXhwIjoxNzgyMzc4ODg4fQ.2kQEGvLj_jXnOzSLuLOthIPp4cBLDJBmXNxRk5SJ260",
+    "data": {
+      "name": {
+        "first": "jemish",
+        "last": "dhameliya"
+      },
+      "email": "dhameliyajemish92@gmail.com",
+      "phone_number": "9313683554",
+      "address": {
+        "country": "India",
+        "street": "817,pragti it park",
+        "area": "yt",
+        "city": "surat",
+        "state": "gujrat",
+        "pincode": "395010"
+      },
+      "payment_method": "UPI"
+    }
+  },
+  "RAZORPAY_KEY_ID": "rzp_test_T0HeIVAevHOF3g",
+  "RAZORPAY_KEY_SECRET": "set"
+}
+[2026-06-25T08:15:06.248Z] RAZORPAY_KEYS_CHECK {
+  "key_id_from_env": "rzp_test_T0HeIVAevHOF3g",
+  "key_secret_exists": true,
+  "env_all": [
+    "RAZORPAY_KEY_ID",
+    "RAZORPAY_KEY_SECRET"
+  ]
+}
+[2026-06-25T08:15:06.248Z] Creating Razorpay order via Axios {
+  "options": {
+    "amount": 13000,
+    "currency": "INR",
+    "receipt": "VOO118"
+  },
+  "key_id": "rzp_test_T0HeIVAevHOF3g"
+}
+[2026-06-25T08:15:06.558Z] Razorpay order created successfully {
+  "id": "order_T5nK0U5xVwqiLk"
+}
+[2026-06-25T08:22:41.173Z] verifyPayment started {
+  "body": {
+    "razorpay_order_id": "order_T5nK0U5xVwqiLk",
+    "razorpay_payment_id": "pay_T5nR1YtjOGSY9l",
+    "razorpay_signature": "d7ea294bdbe49c9c24aca430ce0f93d3a47041683386607d92890405a9d5a5e0",
+    "metadata": {
+      "order_id": "VOO118",
+      "user_id": "guest",
+      "name": {
+        "first": "jemish",
+        "last": "dhameliya"
+      },
+      "email": "dhameliyajemish92@gmail.com",
+      "phone_number": "9313683554",
+      "address": {
+        "country": "India",
+        "street": "817,pragti it park",
+        "area": "yt",
+        "city": "surat",
+        "state": "gujrat",
+        "pincode": "395010"
+      },
+      "total": "130.00"
+    }
+  }
+}
+[2026-06-25T08:22:41.175Z] Signature verified 
+[2026-06-25T08:22:41.308Z] VERIFICATION ERROR {
+  "message": "Order validation failed: payment_method: `UPI/CARD` is not a valid enum value for path `payment_method`.",
+  "stack": "ValidationError: Order validation failed: payment_method: `UPI/CARD` is not a valid enum value for path `payment_method`.\n    at Document.invalidate (D:\\grocerry\\node_modules\\mongoose\\lib\\document.js:3197:32)\n    at D:\\grocerry\\node_modules\\mongoose\\lib\\document.js:2985:17\n    at D:\\grocerry\\node_modules\\mongoose\\lib\\schematype.js:1350:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)"
+}
+[2026-06-25T08:25:49.460Z] createCheckoutSession started {
+  "body": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0cyI6W3sicHJvZHVjdF9pZCI6IlNOQUNLU18wMjAiLCJuYW1lIjoiVG9ydGlsbGEgQ2hpcHMiLCJwcmljZSI6MTMwLCJxdWFudGl0eSI6MSwiaW1hZ2UiOiIvaW1hZ2VzL2dyb2NlcnkvU25hY2tzL3RvcnRpbGxhX2NoaXBzX3BhY2tldF8wMjAuanBnIiwiYnJhbmQiOiJHZW5lcmljIiwicGFja2FnaW5nIjp7InF1YW50aXR5IjoiMSIsInVuaXQiOiJwYWNrZXQifX1dLCJ0b3RhbCI6IjEzMC4wMCIsImlhdCI6MTc4MjM3NTI4OCwiZXhwIjoxNzgyMzc4ODg4fQ.2kQEGvLj_jXnOzSLuLOthIPp4cBLDJBmXNxRk5SJ260",
+    "data": {
+      "name": {
+        "first": "jemish",
+        "last": "dhameliya"
+      },
+      "email": "dhameliyajemish92@gmail.com",
+      "phone_number": "9313683554",
+      "address": {
+        "country": "India",
+        "street": "817,pragti it park",
+        "area": "yt",
+        "city": "surat",
+        "state": "gujrat",
+        "pincode": "395010"
+      },
+      "payment_method": "UPI"
+    }
+  },
+  "RAZORPAY_KEY_ID": "rzp_test_T0HeIVAevHOF3g",
+  "RAZORPAY_KEY_SECRET": "set"
+}
+[2026-06-25T08:25:49.462Z] RAZORPAY_KEYS_CHECK {
+  "key_id_from_env": "rzp_test_T0HeIVAevHOF3g",
+  "key_secret_exists": true,
+  "env_all": [
+    "RAZORPAY_KEY_ID",
+    "RAZORPAY_KEY_SECRET"
+  ]
+}
+[2026-06-25T08:25:49.463Z] Creating Razorpay order via Axios {
+  "options": {
+    "amount": 13000,
+    "currency": "INR",
+    "receipt": "AYW799"
+  },
+  "key_id": "rzp_test_T0HeIVAevHOF3g"
+}
+[2026-06-25T08:25:49.683Z] Razorpay order created successfully {
+  "id": "order_T5nVKUBj96Clpg"
+}
+[2026-06-25T08:28:02.471Z] createCheckoutSession started {
+  "body": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0cyI6W3sicHJvZHVjdF9pZCI6IkhPTUVfMDE0IiwibmFtZSI6IlJhem9yIFBhY2siLCJwcmljZSI6MjI1LCJxdWFudGl0eSI6MSwiaW1hZ2UiOiIvaW1hZ2VzL2dyb2NlcnkvUGVyc29uYWxDYXJlL3Jhem9yX3BhY2tfMDEzLmpwZyIsImJyYW5kIjoiR2VuZXJpYyIsInBhY2thZ2luZyI6eyJxdWFudGl0eSI6IjEiLCJ1bml0IjoicGFjayJ9fV0sInRvdGFsIjoiMjI1LjAwIiwiaWF0IjoxNzgyMzc2MDcxLCJleHAiOjE3ODIzNzk2NzF9.gWjSFbZVBIoLiXoNxm1hK4HnE9qZYB0JF1iG89xK4f0",
+    "data": {
+      "name": {
+        "first": "jemish",
+        "last": "dhameliya"
+      },
+      "email": "dhameliyajemish92@gmail.com",
+      "phone_number": "9313683554",
+      "address": {
+        "country": "India",
+        "street": "817,pragti it park",
+        "area": "yt",
+        "city": "surat",
+        "state": "gujrat",
+        "pincode": "395010"
+      },
+      "payment_method": "UPI"
+    }
+  },
+  "RAZORPAY_KEY_ID": "rzp_test_T0HeIVAevHOF3g",
+  "RAZORPAY_KEY_SECRET": "set"
+}
+[2026-06-25T08:28:02.474Z] RAZORPAY_KEYS_CHECK {
+  "key_id_from_env": "rzp_test_T0HeIVAevHOF3g",
+  "key_secret_exists": true,
+  "env_all": [
+    "RAZORPAY_KEY_ID",
+    "RAZORPAY_KEY_SECRET"
+  ]
+}
+[2026-06-25T08:28:02.475Z] Creating Razorpay order via Axios {
+  "options": {
+    "amount": 22500,
+    "currency": "INR",
+    "receipt": "CRQ425"
+  },
+  "key_id": "rzp_test_T0HeIVAevHOF3g"
+}
+[2026-06-25T08:28:02.601Z] Razorpay order created successfully {
+  "id": "order_T5nXfb2IGUKEcV"
+}
+[2026-06-26T03:50:47.606Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-26T05:49:33.544Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-26T05:56:49.122Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-26T05:59:29.493Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-26T06:26:16.393Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-26T08:05:44.055Z] createCheckoutSession started {
+  "body": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0cyI6W3sicHJvZHVjdF9pZCI6IkJFVl8wMTciLCJuYW1lIjoiTWlsa3NoYWtlIiwicHJpY2UiOjc1LCJxdWFudGl0eSI6MSwiaW1hZ2UiOiIvaW1hZ2VzL2dyb2NlcnkvQmV2ZXJhZ2VzL21pbGtzaGFrZV9ib3R0bGVfMDE3LmpwZyIsImJyYW5kIjoiR2VuZXJpYyIsInBhY2thZ2luZyI6eyJxdWFudGl0eSI6IjEiLCJ1bml0IjoiYm90dGxlIn19XSwidG90YWwiOiI3NS4wMCIsImlhdCI6MTc4MjQ2MTA5MSwiZXhwIjoxNzgyNDY0NjkxfQ.jOGwTM4Ey8s8nIYZ-FQo92pIWxm7R5CiFcytrJL601I",
+    "data": {
+      "name": {
+        "first": "isha",
+        "last": "kothiya"
+      },
+      "email": "kothiyaisha5@gmail.com",
+      "phone_number": "9099129101",
+      "address": {
+        "country": "India",
+        "street": "817,pragti it park",
+        "area": "yogichowk",
+        "city": "surat",
+        "state": "gujrat",
+        "pincode": "395010"
+      },
+      "payment_method": "UPI"
+    }
+  },
+  "RAZORPAY_KEY_ID": "rzp_test_T0HeIVAevHOF3g",
+  "RAZORPAY_KEY_SECRET": "set"
+}
+[2026-06-26T08:05:44.058Z] RAZORPAY_KEYS_CHECK {
+  "key_id_from_env": "rzp_test_T0HeIVAevHOF3g",
+  "key_secret_exists": true,
+  "env_all": [
+    "RAZORPAY_KEY_ID",
+    "RAZORPAY_KEY_SECRET"
+  ]
+}
+[2026-06-26T08:05:44.060Z] Creating Razorpay order via Axios {
+  "options": {
+    "amount": 7500,
+    "currency": "INR",
+    "receipt": "CWK553"
+  },
+  "key_id": "rzp_test_T0HeIVAevHOF3g"
+}
+[2026-06-26T08:05:44.253Z] Razorpay order created successfully {
+  "id": "order_T6BhFF3B6mPiEz"
+}
+[2026-06-26T08:09:06.488Z] verifyPayment started {
+  "body": {
+    "razorpay_order_id": "order_T6BhFF3B6mPiEz",
+    "razorpay_payment_id": "pay_T6BkIujvM3XirX",
+    "razorpay_signature": "eeb5a8253a6877ffd56fd5576c7cf129c4b0919f2bf21583dfb589db96524ff7",
+    "metadata": {
+      "order_id": "CWK553",
+      "user_id": "guest",
+      "name": {
+        "first": "isha",
+        "last": "kothiya"
+      },
+      "email": "kothiyaisha5@gmail.com",
+      "phone_number": "9099129101",
+      "address": {
+        "country": "India",
+        "street": "817,pragti it park",
+        "area": "yogichowk",
+        "city": "surat",
+        "state": "gujrat",
+        "pincode": "395010"
+      },
+      "total": "75.00",
+      "payment_method": "UPI"
+    }
+  }
+}
+[2026-06-26T08:09:06.489Z] Signature verified 
+[2026-06-26T08:09:06.555Z] Order saved to DB {
+  "order_id": "CWK553"
+}
+[2026-06-26T08:16:47.628Z] createCheckoutSession started {
+  "body": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9kdWN0cyI6W3sicHJvZHVjdF9pZCI6IkJFVl8wMTciLCJuYW1lIjoiTWlsa3NoYWtlIiwicHJpY2UiOjc1LCJxdWFudGl0eSI6MSwiaW1hZ2UiOiIvaW1hZ2VzL2dyb2NlcnkvQmV2ZXJhZ2VzL21pbGtzaGFrZV9ib3R0bGVfMDE3LmpwZyIsImJyYW5kIjoiR2VuZXJpYyIsInBhY2thZ2luZyI6eyJxdWFudGl0eSI6IjEiLCJ1bml0IjoiYm90dGxlIn19XSwidG90YWwiOiI3NS4wMCIsImlhdCI6MTc4MjQ2MTc3MSwiZXhwIjoxNzgyNDY1MzcxfQ.q7C75IxVO5uuU91bdJ1mbPrvC76MKQa2mkqYKcP-b68",
+    "data": {
+      "name": {
+        "first": "kothiya",
+        "last": "isha"
+      },
+      "email": "kothiyaisha5@gmail.com",
+      "phone_number": "9099129101",
+      "address": {
+        "country": "India",
+        "street": "817,pragti it park",
+        "area": "yogichowk",
+        "city": "surat",
+        "state": "gujrat",
+        "pincode": "395010"
+      },
+      "payment_method": "UPI"
+    }
+  },
+  "RAZORPAY_KEY_ID": "rzp_test_T0HeIVAevHOF3g",
+  "RAZORPAY_KEY_SECRET": "set"
+}
+[2026-06-26T08:16:47.630Z] RAZORPAY_KEYS_CHECK {
+  "key_id_from_env": "rzp_test_T0HeIVAevHOF3g",
+  "key_secret_exists": true,
+  "env_all": [
+    "RAZORPAY_KEY_ID",
+    "RAZORPAY_KEY_SECRET"
+  ]
+}
+[2026-06-26T08:16:47.631Z] Creating Razorpay order via Axios {
+  "options": {
+    "amount": 7500,
+    "currency": "INR",
+    "receipt": "PUO105"
+  },
+  "key_id": "rzp_test_T0HeIVAevHOF3g"
+}
+[2026-06-26T08:16:47.817Z] Razorpay order created successfully {
+  "id": "order_T6BsvX0PauVK3D"
+}
+[2026-06-26T08:17:49.790Z] verifyPayment started {
+  "body": {
+    "razorpay_order_id": "order_T6BsvX0PauVK3D",
+    "razorpay_payment_id": "pay_T6BtelGSPkn3vn",
+    "razorpay_signature": "1d44271fde13150d1fea593b91a66f399346afb68451e5345a983a3579322c64",
+    "metadata": {
+      "order_id": "PUO105",
+      "user_id": "guest",
+      "name": {
+        "first": "kothiya",
+        "last": "isha"
+      },
+      "email": "kothiyaisha5@gmail.com",
+      "phone_number": "9099129101",
+      "address": {
+        "country": "India",
+        "street": "817,pragti it park",
+        "area": "yogichowk",
+        "city": "surat",
+        "state": "gujrat",
+        "pincode": "395010"
+      },
+      "total": "75.00",
+      "payment_method": "UPI"
+    }
+  }
+}
+[2026-06-26T08:17:49.791Z] Signature verified 
+[2026-06-26T08:17:49.873Z] Order saved to DB {
+  "order_id": "PUO105"
+}
+[2026-06-26T08:30:50.409Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-26T08:52:53.394Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-26T08:53:54.326Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-26T08:54:10.777Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-26T08:55:01.119Z] Payments.js module loaded with Direct Axios Implementation 
+[2026-06-27T06:10:47.946Z] Payments.js module loaded with Direct Axios Implementation 

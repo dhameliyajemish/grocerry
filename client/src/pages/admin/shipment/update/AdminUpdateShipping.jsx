@@ -94,9 +94,7 @@ const AdminUpdateShipping = () => {
             {loading && <Loading
                 text={state === INPUT ? 'Fetching Database' : (state === SHIPPING_VIEW ? 'Updating Database' : 'Loading')}
                 overlay={true}/>}
-            <div className={'heading'}>
-                <h1>Update Shipping Status</h1>
-            </div>
+            <h1 className={styles['page-title']}>Update Shipping Status</h1>
             {(state === INPUT || state === SHIPPING_VIEW) &&
                 <div className={'warning-box'}><span className={'warning'}>Warning:</span> The shipping status cannot be
                     rolled back to a previous

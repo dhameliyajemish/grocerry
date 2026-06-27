@@ -1,25 +1,31 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    --GRID-TEMPLATE: 1fr 2fr .5fr .6fr;
+    --GRID-TEMPLATE: 1.2fr 2fr 1fr 1fr;
+    background: var(--SURFACE);
+    border-radius: 12px;
+    border: 1px solid var(--BORDER_COLOR);
+    box-shadow: var(--SHADOW_SM);
+    overflow: hidden;
 }
 
 .header {
-    background: white;
-    position: sticky;
-    top: 3.7em;
+    background: var(--BG_SECONDARY);
     display: grid;
     grid-template-columns: var(--GRID-TEMPLATE);
-    padding: .5em 1em;
+    padding: 1rem 1.5rem;
     user-select: none;
-    gap: .5em;
+    gap: 1rem;
+    border-bottom: 2px solid var(--BORDER_COLOR);
 }
 
 .header div {
     text-align: left;
-    font-size: .8rem;
-    font-weight: 500;
-    color: var(--NEUTRAL_7);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--TEXT_SECONDARY);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .status {

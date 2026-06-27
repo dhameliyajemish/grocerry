@@ -1,21 +1,13 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 4em;
-    padding: 4em 0;
-    min-height: 80vh;
+    gap: 1.5rem;
+    padding: 0;
 }
 
-.orders-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    padding: 0 2em;
-}
-
-@media screen and (min-width: 800px) {
-    .wrapper {
-        max-width: 800px;
-        margin: auto;
-    }
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--TEXT_PRIMARY);
+    margin: 0;
 }

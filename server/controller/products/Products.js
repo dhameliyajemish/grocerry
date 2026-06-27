@@ -416,3 +416,29 @@ export const getProductById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+export const getCategoryCounts = async (req, res) => {
+    try {
+        const counts = await Products.aggregate([
+            { $group: { _id: "$category", count: { $sum: 1 } } }
+        ]);
+        
+        const formattedCounts = {};
+        let totalCount = 0;
+        
+        counts.forEach(item => {
+            if (item._id) {
+                const normalizedCategory = item._id.replace(/\s+/g, '');
+                formattedCounts[normalizedCategory] = (formattedCounts[normalizedCategory] || 0) + item.count;
+                totalCount += item.count;
+            }
+        });
+        
+        formattedCounts["AllProducts"] = totalCount;
+        
+        res.status(200).json(formattedCounts);
+    } catch (error) {
+        console.error("Get Category Counts Error:", error);
+        res.status(500).json({ message: error.message });
+    }
+}

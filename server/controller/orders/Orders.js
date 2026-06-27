@@ -229,13 +229,14 @@ export const createOrderAdmin = async (req, res) => {
     try {
         const { customerName, customerEmail, customerPhone, address, products, total, paymentMethod } = req.body;
         const nameParts = customerName.split(" ");
+        const mappedPaymentMethod = paymentMethod === "ONLINE" ? "CARD" : "COD";
         const order = new Order({
             order_id: generateId(), user_id: "ADMIN_CREATED",
             name: { first: nameParts[0] || "", last: nameParts.slice(1).join(" ") || "" },
             email: customerEmail || "", phone_number: customerPhone || "",
             address: typeof address === "string" ? JSON.parse(address) : (address || {}),
             ordered_at: Date.now(), products: typeof products === "string" ? JSON.parse(products) : products,
-            total: parseFloat(total), payment_method: paymentMethod || "CASH",
+            total: parseFloat(total), payment_method: mappedPaymentMethod,
             payment_status: paymentMethod === "ONLINE" ? "PAID" : "PENDING", status: "CONFIRMED"
         });
         await order.save();

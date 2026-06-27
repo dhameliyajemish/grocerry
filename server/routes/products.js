@@ -11,7 +11,8 @@ import {
   getProductsArr,
   updateQuantity,
   uploadProductsFromPDF,
-  getProductById
+  getProductById,
+  getCategoryCounts
 } from "../controller/products/Products.js";
 import auth from "../middleware/auth.js";
 import adminAuth from "../middleware/adminAuth.js";
@@ -38,6 +39,7 @@ router.post("/", adminAuth, PostProducts);
 router.patch("/", adminAuth, adminUpdateProducts);
 router.patch("/updateQuantity", adminAuth, updateQuantity);
 router.get("/search", productsSearch);
+router.get("/categories/count", getCategoryCounts);
 router.get("/:id", getProductById);
 router.post("/cart", validateCart);
 router.post("/arr", getProductsArr);

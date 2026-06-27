@@ -183,7 +183,7 @@ export const verifyPayment = async (req, res) => {
             products: metadata.products,
             total: metadata.total,
             status: 'CONFIRMED',
-            payment_method: 'UPI/CARD',
+            payment_method: metadata.payment_method || 'CARD',
             payment_status: 'PAID',
             razorpay_details: {
                 order_id: razorpay_order_id,

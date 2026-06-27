@@ -1,29 +1,39 @@
 import Users from "../../model/Users.js";
-import axios from "axios";
-import { PRODUCTS_BASEURL } from "../../services/BaseURLs.js";
+import Products from "../../model/Products.js";
 
 export const getWishlist = async (req, res) => {
-    const { id } = req.body;
+    const id = req.user?.id;
 
     try {
-        // get user's wishlist array
-        const { wishlist } = await Users.findById(id);
-
-        // request the products in the wishlist from the `Products` service
-        const { data } = await axios.post(`${PRODUCTS_BASEURL}/arr`, { arr: wishlist });
-
-        // respond with all products
-        res.status(200).json(data);
+        if (!id) {
+            return res.status(400).json({ message: "User ID missing from token payload" });
+        }
+        const user = await Users.findById(id);
+        if (!user) {
+            console.warn(`getWishlist: User not found in DB for ID: ${id}`);
+            return res.status(404).json({ message: "User not found. Please log in again." });
+        }
+        const wishlist = user.wishlist || [];
+        const products = await Products.find({ id: { $in: wishlist } });
+        res.status(200).json(products);
     } catch (e) {
+        console.error("getWishlist error:", e);
         res.status(400).json({ message: e.message });
     }
 }
 
 export const updateWishlist = async (req, res) => {
-    const { id, product_id } = req.body;
+    const id = req.user?.id;
+    const { product_id } = req.body;
     try {
+        if (!id) {
+            return res.status(400).json({ message: "User ID missing from token payload" });
+        }
         const user = await Users.findById(id);
-        const products = await Products.find({ id: { $in: user.wishlist } });
+        if (!user) {
+            console.warn(`updateWishlist: User not found in DB for ID: ${id}`);
+            return res.status(404).json({ message: "User not found. Please log in again." });
+        }
 
         // if the user doesn't have a wishlist defined yet set it to an empty array
         const wishlist = user.wishlist || [];
@@ -41,6 +51,7 @@ export const updateWishlist = async (req, res) => {
         // respond with the new wishlist
         res.status(201).json({ wishlist: newWishlist });
     } catch (error) {
+        console.error("updateWishlist error:", error);
         res.status(409).json({ message: error.message });
     }
 }

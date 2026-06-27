@@ -6,7 +6,9 @@ import {
     deleteUser,
     deleteProduct,
     getProduct,
-    updateProduct
+    updateProduct,
+    getAllReviews,
+    deleteReview
 } from "../controller/admin/Admin.js";
 import adminAuth from "../middleware/adminAuth.js";
 
@@ -24,5 +26,9 @@ router.delete('/users/:userId', adminAuth, deleteUser);
 router.get('/products/:productId', adminAuth, getProduct);
 router.patch('/products/:productId', adminAuth, updateProduct);
 router.delete('/products/:productId', adminAuth, deleteProduct);
+
+// Reviews Management
+router.get('/reviews', adminAuth, getAllReviews);
+router.delete('/reviews/:reviewId', adminAuth, deleteReview);
 
 export default router;

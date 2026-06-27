@@ -17,6 +17,10 @@ export const logout = async (dispatch) => {
 
 export const verifyUser = (onSuccess, onError) => async () => {
     try {
+        const profile = localStorage.getItem('profile');
+        if (!profile || !JSON.parse(profile).token) {
+            throw new Error('No token found');
+        }
         const verificationData = await api.verify().then(res => res.data);
         onSuccess(verificationData);
     } catch (e) {

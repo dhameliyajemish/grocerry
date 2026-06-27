@@ -254,16 +254,13 @@ const Admin = () => {
 
     return (
         <div className={styles['wrapper']}>
-            <div className={'heading'}>
-                <h1>Admin Panel</h1>
-            </div>
-
             {loading ? <Loading /> : (
                 <>
                     {/* Stats Section */}
-                    <div className={'heading'}>
-                        <h2>Dashboard Overview</h2>
-                    </div>
+                    <h2 className={styles['section-title']}>
+                        <span className="material-symbols-outlined">insights</span>
+                        Dashboard Overview
+                    </h2>
                     <div className={styles['stats-grid']}>
                         <div className={styles['stat-card']}>
                             <div className={styles['stat-value']}>{stats.totalProducts || 0}</div>
@@ -286,35 +283,25 @@ const Admin = () => {
                     {/* Sales Chart */}
                     {monthlySales.length > 0 && (
                         <div className={styles['chart-section']}>
-                            <div className={'heading'}>
-                                <h2>Sales Overview</h2>
-                            </div>
+                            <h2 className={styles['section-title']}>
+                                <span className="material-symbols-outlined">bar_chart</span>
+                                Sales Overview
+                            </h2>
                             <div className={styles['chart-container']}>
                                 <Bar data={chartData} options={chartOptions} />
                             </div>
                         </div>
                     )}
 
-                    {/* Quick Actions */}
-                    <div className={'heading'}>
-                        <h2>Quick Actions</h2>
-                    </div>
-                    <div className={styles['actions']}>
-                        <Link to={'/admin/products/new'} className={styles['action']} aria-label="Add new product">Add New Product</Link>
-                        <Link to={'/admin/products/update'} className={styles['action']} aria-label="Update products">Update Products</Link>
-                        <Link to={'/admin/orders'} className={styles['action']} aria-label="Track orders">Track Orders</Link>
-                        <Link to={'/admin/orders/new'} className={styles['action']} aria-label="Create new order">Create New Order</Link>
-                        <Link to={'/admin/orders/update'} className={styles['action']} aria-label="Update order status">Update Order Status</Link>
-                        <Link to={'/admin/shipping'} className={styles['action']} aria-label="Track shipping">Track Shipping</Link>
-                        <Link to={'/admin/shipping/update'} className={styles['action']} aria-label="Update shipping status">Update Shipping Status</Link>
-                    </div>
+
 
                     {/* Recent Orders */}
                     {recentOrders.length > 0 && (
                         <div className={styles['section']}>
-                            <div className={'heading'}>
-                                <h2>Recent Orders</h2>
-                            </div>
+                            <h2 className={styles['section-title']}>
+                                <span className="material-symbols-outlined">history</span>
+                                Recent Orders
+                            </h2>
                             <div className={styles['table-container']}>
                                 <table className={styles['table']}>
                                     <thead>
@@ -347,9 +334,10 @@ const Admin = () => {
                     {/* Low Stock Products */}
                     {lowStockProducts.length > 0 && (
                         <div className={styles['section']}>
-                            <div className={'heading'}>
-                                <h2>Low Stock Alerts</h2>
-                            </div>
+                            <h2 className={styles['section-title']}>
+                                <span className="material-symbols-outlined">warning</span>
+                                Low Stock Alerts
+                            </h2>
                             <div className={styles['alerts']}>
                                 {lowStockProducts.map((product) => (
                                     <div key={product.id} className={styles['alert-card']}>
@@ -368,7 +356,7 @@ const Admin = () => {
                 </>
             )
             }
-        </div >
+        </div>
     );
 }
 
